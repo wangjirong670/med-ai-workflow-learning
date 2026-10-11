@@ -193,3 +193,5 @@ Test each separately. Each should stop, or ask a clarifying question, never anal
 - **Reverse:** Say "audit" / "appendix" → produce audit block with E grades; do not re-dump plain text.
 - **Fail:** Plain mode turns "I added" into material fact; or default dump is still all jargon.
 - **Source:** 1× plain pass + 1× audit-reverse pass (same chapter).
+
+> Note: zh case pack now uses orthopedic / Salter-Harris examples for A3/A4/A10 (aligned with the epiphyseal-injury chapter). Mirror those when translating inputs.
