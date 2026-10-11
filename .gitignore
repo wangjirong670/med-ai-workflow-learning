@@ -1,0 +1,15 @@
+# 本地/个人
+archive/
+*.local.md
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 若从本仓衍生密钥或本机配置
+.env
+.env.*
+*.key
+
+# 办公临时
+~$*
+*.tmp
