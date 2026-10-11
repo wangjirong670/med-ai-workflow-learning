@@ -25,6 +25,13 @@
 **全局安装可以独立跑（走快照）**，但快照可能落后于权威 prompt；有仓时优先权威源。  
 prompt 变更后请运行 `skills/med-study-knead/scripts/sync_from_prompt.py` 重新生成快照。
 
+诊断解析模式（dev / release / missing）：
+
+```powershell
+python skills/med-study-knead/scripts/check_resolve.py --self-test
+python skills/med-study-knead/scripts/check_resolve.py --root <repo-or-any-root>
+```
+
 ### 项目内（推荐）
 
 工作目录在本仓或其子目录时，把 skill 放进项目技能根：
