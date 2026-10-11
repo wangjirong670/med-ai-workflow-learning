@@ -23,6 +23,7 @@
 | L2 行为样例 | 人工文件级 | 2026-10-12 | [`tests/results/skill-behavior-B-2026-10-12.md`](../tests/results/skill-behavior-B-2026-10-12.md) |
 | 缺失依赖负面 | 本机脚本 | 2026-10-12 | [`tests/results/2026-10-12-missing-dep.md`](../tests/results/2026-10-12-missing-dep.md) |
 | **DSH Skill 发布模式 P0** | DSH + CDP · MiMo-V2.6-Flash | 2026-10-12 | [`tests/results/2026-10-12-dsh-skill-p0.md`](../tests/results/2026-10-12-dsh-skill-p0.md) |
+| **MiMo catalog 自动加载** | MiMo Desktop 新会话 | 2026-10-12 | [`tests/results/2026-10-12-mimo-catalog-load.md`](../tests/results/2026-10-12-mimo-catalog-load.md) |
 
 ## 按 ID 计数（汇总，细节在 results）
 
@@ -62,7 +63,7 @@
 | 英文 prompt | 未测 | 0/0 | |
 | L2-规格 | 冒烟单次 | 1/1 | validate_skill |
 | L2-行为 | 冒烟单次 | 1/1 | formA + A3 文件级 |
-| L2-catalog | 未测 | 0/0 | MiMo 新会话；DSH 无目录，改发布模式灌包 |
+| L2-catalog | 冒烟单次 | 1/1 | **MiMo 新会话自动加载 PASS**（2026-10-12）；DSH 无目录用发布模式 |
 | L2-missing-dep | 冒烟单次 | 1/1 | 解析三模式+停用规则（脚本） |
 
 ## 重点回归队列（阶段 C 起，不扩功能）
