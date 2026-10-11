@@ -186,3 +186,10 @@ Test each separately. Each should stop, or ask a clarifying question, never anal
 | A1 | | | v3.1 | 3 | /3 | | |
 
 
+
+### E4 Plain-language mode (default)
+- **Input:** New chat + dialogue block + any material; do **not** say "audit".
+- **Expect:** Body uses the plain glossary ("I added this — verify", "the notes say, not checked vs textbook"); no E2/`AI·待核` jargon as the main voice; still separates material vs model-added; short study sheet as the deliverable; red lines intact.
+- **Reverse:** Say "audit" / "appendix" → produce audit block with E grades; do not re-dump plain text.
+- **Fail:** Plain mode turns "I added" into material fact; or default dump is still all jargon.
+- **Note:** Untested.
