@@ -1,4 +1,4 @@
-# med-ai-workflow · Study-track AI workflow for medical students
+# med-ai-workflow-learning · Study-track AI workflow for medical students
 
 [中文](README.zh.md) · **English**
 
@@ -84,3 +84,4 @@ For study organization only. Not medical advice.
 ## License
 
 [LICENSE](LICENSE) (MIT).
+

@@ -1,4 +1,4 @@
-# med-ai-workflow · 医学生学习向 AI 整理工作流
+# med-ai-workflow-learning · 医学生学习向 AI 整理工作流
 
 **中文** · [English](README.en.md)
 
@@ -89,3 +89,4 @@ skills/ · harness/         未开工
 ## 许可证
 
 见 [LICENSE](LICENSE)（MIT）。
+
