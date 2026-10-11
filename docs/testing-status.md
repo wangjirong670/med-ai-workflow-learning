@@ -53,3 +53,12 @@ A9 之后用**相同数字**的教材病例触发「问一句来源」——符�
 
 - DeepSeek Harness：`DeepSeek Harness.exe --remote-debugging-port=9222`，CDP 脚本见会话临时目录（未入库）。  
 - 本机 `AGENTS.md` 会被 harness 一并读入——正式验收若要纯 prompt 效果，可在描述里注明是否叠加本机规则。
+
+## L2 Skill（2026-10-12）
+
+| 项 | 结果 |
+|----|------|
+| `skills/med-study-knead` 规格校验 | PASS（skill-creator validate，0 err） |
+| 形态 A 人话冒烟（`examples/formA-notes.md`） | 1 次，人工套 skill 规则；默认人话、主句无审计黑话、红线标记在 |
+
+样例：`docs/skill-smoke-formA-1x.md`。口径仍是**冒烟/单次**，不是「红线全面通过」。

@@ -71,14 +71,16 @@ prompts/quickstart.en.md   英文说明（正文未翻译）
 docs/                      方法、测试状态、发布检查
 tests/                     红线用例（中英）
 examples/                  合成示例
-skills/ · harness/         未开工
+skills/med-study-knead/    学习向 L2 skill（可用）
+harness/                   未开工
 ```
 
 ## 路线图
 
 - [x] L1 Prompt：学习向  
 - [ ] 补测（见 `tests/`）  
-- [ ] L2 Skill、L3 Harness  
+- [x] L2 Skill：[`skills/med-study-knead`](skills/med-study-knead/)（安装见 [`skills/README.md`](skills/README.md)）  
+- [ ] L3 Harness  
 - [ ] 临床向 → 另仓 `med-ai-workflow-clinical`
 
 ## 发现红线失败？

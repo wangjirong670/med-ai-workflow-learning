@@ -63,14 +63,16 @@ prompts/quickstart.en.md   English note (body not translated)
 docs/                      method, test status, publish checklist
 tests/                     red-line cases (zh + en)
 examples/                  synthetic samples
-skills/ · harness/         not started
+skills/med-study-knead/    L2 study-track skill (usable)
+harness/                   not started
 ```
 
 ## Roadmap
 
 - [x] L1 prompt: study track  
 - [ ] More tests (see `tests/`)  
-- [ ] L2 skill, L3 harness  
+- [x] L2 skill: [`skills/med-study-knead`](skills/med-study-knead/) (install: [`skills/README.md`](skills/README.md))  
+- [ ] L3 harness  
 - [ ] Clinical track → sibling repo  
 
 ## Red-line failure?
