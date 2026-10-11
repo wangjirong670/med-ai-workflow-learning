@@ -13,3 +13,6 @@ desktop.ini
 # 办公临时
 ~$*
 *.tmp
+
+# 本机 skill 安装副本（源在 skills/）
+.mimocode/

@@ -7,6 +7,7 @@ metadata:
   prompt-pin: prompts/quickstart.zh.md
   prompt-version: v3.1+
   layer: L2
+  snapshot: references/snapshot/
 ---
 
 # med-study-knead · 学习向整理
@@ -14,13 +15,25 @@ metadata:
 学习向 L1 的可加载封装：把课业乱材料揉成**可辩护**的复习结构。  
 循环：**人乱扔 → AI 揉 → 人拍板**。不确定写不确定。
 
-## 版本钉子（不可分叉）
+## 版本钉子与依赖解析（不可分叉）
 
-- **权威源** = 仓内 `prompts/quickstart.zh.md`（学习向一键试用 v3.1+）。
-- 纪律与双轨循环 = `docs/method.zh.md`（无 E 档定义）。
-- 本 skill **不得**与上述 prompt 规则分叉；表述冲突时以 `prompts/quickstart.zh.md` 为准，按 prompt 执行，并在回复中用一行说明引用了哪一节。
-- 禁止把学习向 E 档语义写回 `docs/method.zh.md`；禁止新增诊疗/用药能力；禁止出现「转临床轨」产品承诺。
-- 详细规则（E 表全文、形态主链、坏输出打分表、审计块结构）**外置**，按需读 prompt 对应节，不要粘进本文件。
+**权威源** = 仓内 `prompts/quickstart.zh.md`（学习向一键试用 v3.1+）。  
+**纪律源** = `docs/method.zh.md`（无 E 档定义）。
+
+解析顺序（按能找到的最高档执行，禁止跳档假装齐全）：
+
+1. **开发模式（优先）**：能读到权威路径 → 直接读 `prompts/quickstart.zh.md` / `docs/method.zh.md` 对应节。冲突以权威源为准，按权威源执行，并在回复中用一行说明引用了哪一节。
+2. **发布模式（回退）**：权威路径不可达，但本 skill 自带 `references/snapshot/` 存在 → 使用：
+   - `references/snapshot/quickstart.snapshot.md`
+   - `references/snapshot/method.snapshot.md`
+   - `references/snapshot/MANIFEST.json`（来源版本与 sha256）  
+   使用快照时**必须**在输出里注明：「依据 skill 快照（非仓内实时 prompt）」。
+3. **缺失**：权威源与快照都不可用 → **停用规则执行**，只说明缺哪些文件、应如何放置，**禁止**凭记忆假装已按 E 表 / 红线 / 坏输出表执行。
+
+快照由 `scripts/sync_from_prompt.py` **生成**，禁止手改；prompt 变更后需重跑脚本同步。
+
+本 skill **不得**与 prompt 规则分叉；禁止把学习向 E 档语义写回 `docs/method.zh.md`；禁止新增诊疗/用药能力；禁止出现「转临床轨」产品承诺。  
+详细规则（E 表全文、形态主链、坏输出打分表、审计块结构）**外置**到上述文件，不要粘进本 SKILL 正文。
 
 ## 红线摘要（语义与 quickstart 一致，不可再删）
 
@@ -77,6 +90,8 @@ metadata:
 
 ## 材料索引（按需打开，勿回贴全文）
 
+权威路径优先；不可达时用 `references/snapshot/` 下同名内容（见上「版本钉子」）。
+
 | 需要 | 打开 |
 |------|------|
 | E1–E4 全表、`AI·待核`、倾向拆明 | `prompts/quickstart.zh.md` →「学习向证据档位」 |
@@ -86,7 +101,8 @@ metadata:
 | 人话硬规则、输出骨架、钉子单模板 | 同上 →「输出模式」「输出」 |
 | 坏输出打分表 | 同上 →「坏输出（打分表）」 |
 | 循环纪律、范围切割、勘误协议 | `docs/method.zh.md` |
-| 红线用例 / 反例 | `tests/redline-cases.zh.md` |
+| 红线用例 / 反例 | `tests/redline-cases.zh.md`（可选，非运行必需） |
+| 发布快照校验 | `references/snapshot/MANIFEST.json` |
 
 ## 触发示例
 

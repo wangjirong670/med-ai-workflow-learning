@@ -16,8 +16,14 @@
 
 ## 安装 / 加载（MiMo SKILL.md）
 
-Skill 设计为与仓内 prompt 同用（需要能读到 `prompts/quickstart.zh.md`）。  
-**全局安装 ≠ 可在任意项目独立跑**：缺依赖时应说明缺失，不得假装已执行对应规则。
+依赖解析（详见 skill 内「版本钉子与依赖解析」）：
+
+1. **开发模式（优先）**：能读到仓内 `prompts/quickstart.zh.md` / `docs/method.zh.md` → 用权威源。  
+2. **发布模式（回退）**：只安装了 skill 文件夹 → 用自带 `references/snapshot/`（脚本生成，含 MANIFEST sha256）。  
+3. **缺失**：两者都无 → 明说缺文件，**禁止**假装已按规则执行。
+
+**全局安装可以独立跑（走快照）**，但快照可能落后于权威 prompt；有仓时优先权威源。  
+prompt 变更后请运行 `skills/med-study-knead/scripts/sync_from_prompt.py` 重新生成快照。
 
 ### 项目内（推荐）
 
@@ -61,7 +67,7 @@ Copy-Item -Recurse -Force "$repo/skills/med-study-knead" $skills
 - 测试口径：冒烟/单次，禁止写「红线通过」  
 - 临床向 skill 不在本仓  
 
-## 路线（已拍板，未实施）
+## 路线
 
-- **阶段 B**：脚本从 prompt 生成 `references/` 发布快照（带来源版本），支持脱离仓内路径的打包安装  
-- **阶段 C**：测试结果进 `tests/results/`；用例定义与运行记录分离  
+- ~~阶段 B~~ **2026-10-12 已做**：`scripts/sync_from_prompt.py` 生成 `references/snapshot/`（MANIFEST 含 sha256）；SKILL 双模式依赖；集成冒烟见 `tests/results/`  
+- **阶段 C（未做）**：测试结果全面进 `tests/results/`；用例定义与运行记录分离；红线重复次数  

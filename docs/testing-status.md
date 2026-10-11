@@ -69,5 +69,20 @@
 
 ## L2 Skill（2026-10-12）
 
-见上表 L2-规格 / L2-冒烟。安装与触发：[`skills/README.md`](../skills/README.md)。  
-后续（阶段 B，未做）：生成 prompt 快照进 `references/`、真加载集成测试。
+见上表 L2-规格 / L2-冒烟。安装与触发：[`skills/README.md`](../skills/README.md)。
+
+### 阶段 B（2026-10-12）集成冒烟
+
+| 项 | 结果 |
+|----|------|
+| `scripts/sync_from_prompt.py` 生成快照 + MANIFEST sha256 | 通过（与 live 源哈希一致） |
+| 双模式依赖（prompt 优先 / snapshot 回退 / 缺失明说） | 文件检查通过 |
+| 发布模式（仅 skill 目录、无 prompt） | 通过（快照含红线与 E 表） |
+| 工程安装 `.mimocode/skills/`（已 gitignore） | 已复制 |
+| 运行时 `skill` 目录自动加载 | **未通过/未完成**：本会话中途安装，catalog 不含本 skill；需**新会话**再验 |
+| 行为样例 formA 人话 + A3 半填 | 各 1 次，文件级套规则；见 `tests/results/` |
+
+明细：[`tests/results/skill-integration-2026-10-12-B.md`](../tests/results/skill-integration-2026-10-12-B.md) · [`skill-behavior-B-2026-10-12.md`](../tests/results/skill-behavior-B-2026-10-12.md)。  
+口径：**冒烟/单次**，非红线全面通过；非 DSH 自动跑。
+
+阶段 C（未做）：运行记录全面迁 `tests/results/`；红线重复 ×2；缺失依赖负面脚本。
