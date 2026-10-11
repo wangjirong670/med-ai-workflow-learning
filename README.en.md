@@ -40,31 +40,11 @@ human dumps → AI kneads → human decides
 
 See [`docs/method.zh.md`](docs/method.zh.md) (Chinese). Summary: E1–E4 · `AI·待核` is not evidence · list↔row reconciliation · range-slicing (in-range absence ≠ missing) · errata never laundered.
 
-## Verified and unverified
+## Verification summary
 
-Three states (never claim "red lines pass"): **not tested** / **smoke 1×** (unreliable) / **smoke 2×**. Plus **unclear** (e.g. D6 erratum needs an induce-error script).
-
-One scanned TCM handout (**not shipped**) + synthetic samples. Drive/env: [`docs/testing-status.md`](docs/testing-status.md).
-
-| Item | Status |
-|------|--------|
-| Form B cold start (pages, T1) | smoke 1× |
-| Blank workbook refusal (A1) | smoke 1× |
-| Half-filled bank (A3) | smoke 1× |
-| Placeholder bypass (A4) | smoke 1× |
-| De-identification bypass (A9) | smoke 1× |
-| Continuous pressure (A10) | smoke 1× |
-| Grade / hint / self-test (B1–B3) | smoke 1× each |
-| Textbook-case allow (C1, cold) | smoke 1× |
-| Reconcile ≠ true (D4) | smoke 1× |
-| Plain language + audit flip (E4) | smoke 2× |
-| Real-patient stop (A7) | smoke 1× |
-| Erratum loop (D6) | **unclear** (range-slicing blocked fake-gap; needs induce script) |
-| A2/A5/A6/A8/A11 · B4 · C2 · D1–D3/D5/D7–D9 · E1–E3 · English prompt | not tested |
-| Repeat listed passes ×2 for rates | pending |
-| L2 skill validate + formA manual smoke | smoke 1× (not auto-load proof) |
-
-Cases: [`tests/redline-cases.en.md`](tests/redline-cases.en.md). Summary: [`docs/testing-status.md`](docs/testing-status.md).
+- Model: MiMo-V2.6-Flash only. Some batches did not isolate local AGENTS.md.  
+- Per-ID counts only in [`docs/testing-status.md`](docs/testing-status.md) (not-tested / smoke 1x / smoke 2x / unclear).  
+- Never claim "red lines pass". Pure prompt / pure skill isolation not re-run.
 
 ## Layout
 

@@ -69,6 +69,7 @@ def find_repo_root(explicit: str | None) -> Path:
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--repo", help="path to med-ai-workflow repo root")
+    ap.add_argument("--check", action="store_true", help="compare only; exit 1 if snapshot would change")
     args = ap.parse_args()
 
     repo = find_repo_root(args.repo)
@@ -83,7 +84,7 @@ def main() -> int:
         src_path = repo / src["relpath"]
         if not src_path.is_file():
             raise SystemExit(f"missing source: {src_path}")
-        raw = src_path.read_bytes()
+        raw = src_path.read_bytes().replace(b"\r\n", b"\n")
         text = raw.decode("utf-8")
         digest = sha256_bytes(raw)
         header = HEADER_TMPL.format(
@@ -93,7 +94,17 @@ def main() -> int:
             generated_at=generated_at,
         )
         out_path = snap_dir / src["out_name"]
-        out_path.write_text(header + text, encoding="utf-8", newline="\n")
+        payload = header + text
+        if args.check:
+            existing = out_path.read_text(encoding="utf-8") if out_path.is_file() else ""
+            # compare body after header hash line for freshness
+            same = existing.endswith(text) or text in existing
+            # also accept full match of source hash embedded
+            same = same and digest in existing
+            entries.append({"id": src["id"], "check_same": same, "source_sha256": digest})
+            print(f"check {src['id']}: {'OK' if same else 'DRIFT'} sha256={digest[:12]}…")
+            continue
+        out_path.write_text(payload, encoding="utf-8", newline="\n")
         entries.append(
             {
                 "id": src["id"],
@@ -121,6 +132,11 @@ def main() -> int:
         "sources": entries,
         "note": "Snapshot is generated. Authority remains prompts/quickstart.zh.md. Re-run script after prompt edits.",
     }
+    if args.check:
+        drift = [e for e in entries if not e.get("check_same", True)]
+        print(f"check done: {len(entries)} sources, drift={len(drift)}")
+        return 1 if drift else 0
+
     man_path = snap_dir / "MANIFEST.json"
     man_path.write_text(
         json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",

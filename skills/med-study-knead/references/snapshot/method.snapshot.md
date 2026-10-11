@@ -2,8 +2,8 @@
 <!--
 source_id: method
 source_relpath: docs/method.zh.md
-source_sha256: 33662895c04cac2094cc1894e106426fea1866aa19e33f74a616609e9b6457d4
-generated_at: 2026-10-11T17:50:53Z
+source_sha256: ccffa34612eef285999ca9d13a720c81e3c483d8619bb1043a639f115dbfd4ae
+generated_at: 2026-10-11T19:37:20Z
 generator: skills/med-study-knead/scripts/sync_from_prompt.py
 -->
 > **快照说明**：本文件由脚本从 `docs/method.zh.md` 生成，供 Skill 在无法解析仓内权威路径时回退使用。

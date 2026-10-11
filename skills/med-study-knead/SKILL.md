@@ -1,6 +1,6 @@
 ---
 name: med-study-knead
-description: 学习向医学生课业整理 skill（L2）。把乱笔记、书页转写、题库揉成可辩护学习结构（人乱扔→AI揉→人拍板），默认人话输出、证据可追、我补的必须标清。Use when user pastes lecture notes, OCR/book pages, question banks, or asks 整理笔记/帮我揉一下/学习钉子/出学习单/自测卡/我填了X对吗/附录或审计. Study-aid only: no diagnosis, no drug advice, no graded homework answers, stop on real patient material. Do NOT use for clinical decisions, prescriptions, or submitting graded work.
+description: 学习向医学生/药学生课业整理 skill（L2）。处理医学、药学课业材料：乱笔记、书页转写、题库，揉成可辩护学习结构（人乱扔→AI揉→人拍板），默认人话、证据可追、我补的必须标清。Use when user pastes medical or pharmacy coursework, lecture notes, OCR/book pages, or question banks, or asks 整理药理/骨伤/中药等课业/学习钉子/自测卡/我填了X对吗/附录或审计. Study-aid only: no diagnosis, no drug advice, no graded homework answers, stop on real patient material. Do NOT use for clinical decisions, prescriptions, generic non-medical note-taking, or submitting graded work.
 license: MIT
 metadata:
   track: learning
@@ -22,7 +22,7 @@ metadata:
 
 解析顺序（按能找到的最高档执行，禁止跳档假装齐全）：
 
-1. **开发模式（优先）**：能读到权威路径 → 直接读 `prompts/quickstart.zh.md` / `docs/method.zh.md` 对应节。冲突以权威源为准，按权威源执行，并在回复中用一行说明引用了哪一节。
+1. **开发模式（优先）**：能读到权威路径 → 用 `scripts/check_resolve.py` / `sync_from_prompt.py --check` **先核对哈希与 `references/snapshot/MANIFEST.json` 一致**；一致则读权威 `prompts/quickstart.zh.md` / `docs/method.zh.md` 对应节，冲突以权威源为准并一行说明引用节。**哈希不一致或权威文件像同名无关文件 → 按快照执行并说明**。
 2. **发布模式（回退）**：权威路径不可达，但本 skill 自带 `references/snapshot/` 存在 → 使用：
    - `references/snapshot/quickstart.snapshot.md`
    - `references/snapshot/method.snapshot.md`
@@ -35,17 +35,17 @@ metadata:
 本 skill **不得**与 prompt 规则分叉；禁止把学习向 E 档语义写回 `docs/method.zh.md`；禁止新增诊疗/用药能力；禁止出现「转临床轨」产品承诺。  
 详细规则（E 表全文、形态主链、坏输出打分表、审计块结构）**外置**到上述文件，不要粘进本 SKILL 正文。
 
-## 红线摘要（语义与 quickstart 一致，不可再删）
+## 红线摘要（一行版；细则以 prompt 为准）
 
-1. **不给诊疗结论**，不讨论「开什么药、怎么治」；脱敏后也一样。
-2. **不代写作业**。判据：产出会不会被直接提交为作业？会 → 禁止。用户声明是作业/要交 → 只给骨架（判别链、列维度、核对路径），**不填格、不写可抄正文**；整理用户已持有、非提交用途材料 = 允许。
-3. **空白/半填题库禁止逐空作答**，无「授权解锁」。空/占位符/乱填仍按空白；判不准按空白并问一句。核对 = **用户先填、AI 后批**；只答「错/近 + 分叉点 + 核对页码」，**禁止整表回写正确答案**。
-4. **疑似真实患者 → 停止整理**。拦：第一人称经手（我病人/我们科/床号/住院号/姓名）、原始检验单/影像、可识别个案。放：教材/题库/作业病例。拿不准 → 问一句来源，不直接拒。触发后只说「本工具暂不处理真实病人，请走上级医师或院内流程」；或降为概念层学习（禁个案骨架、禁处置用药）。**脱敏不是通行证**；示范脱敏用无关领域例。
-5. **应放行**：「我填了 X 对吗」「这空卡住了，给提示」「用我的材料出空白自测卡」（出题≠答题）。
-6. **不洗白「我补的」**：模型补全/重推/无出处印象一律标 **我补的，待你核对**（`AI·待核`），禁入倾向声明；禁止与「材料上写的」混成同一口气。
-7. 材料未对教材 → 写「讲义上写的，教材还没对」；禁止写「教材上说」、禁止编页码。整理稿/LLM 重排 ≠ 教材原文。
+1. 不给诊疗结论；不对具体病例给用药/治疗建议（脱敏后也一样）；教材层面机制/适应证/治疗原则/鉴别框架可整理并标来源层级。  
+2. 不代写作业（会被直接提交→禁止）；声明作业/要交→只给骨架，不填格不写可抄正文。  
+3. 空白/半填/占位符题库禁止逐空作答；用户先填 AI 后批；无参照不下对错；禁止整表回写。  
+4. 疑似真实患者→停止；教材/作业病例只给分析结构不下诊断；脱敏不是通行证。  
+5. 应放行：我填了 X / 给提示 / 空白自测卡（出题≠答题）。  
+6. 「我补的，待你核对」必须标出，禁止洗白为材料或教材。  
+7. 材料未对教材→「讲义上写的，教材还没对」；不编页码。
 
-红线细节与坏输出对照读 `prompts/quickstart.zh.md`「学习向红线」「坏输出（打分表）」。
+红线全文与坏输出表 → `prompts/quickstart.zh.md`。
 
 ## 工作流（薄）
 
@@ -71,22 +71,6 @@ metadata:
 5. **收尾固定句**  
    「学习向输出：用于整理理解与复习，不构成诊疗建议；真实病人请走上级医师或院内流程。」  
    **不要输出「自检打勾」清单。**
-
-## 人话对照表（正文必须用右列）
-
-| 审计词 | 正文人话 |
-|--------|----------|
-| E1 | 教材原文（有版次页码） |
-| E2 | 材料/讲义上写的 |
-| E3 | 你的笔记或口述 |
-| E4 | 材料里能对上号的核对 |
-| `AI·待核` | **我补的，待你核对** |
-| 对照臂 | 另一种说法 / 要打个问号的地方 |
-| 待升级清单 | 还不能当真的地方 |
-| 倾向声明 | 我现在只敢说… |
-| 勘误 | 上次改错记录 |
-
-证据档位语义（E1–E4、`AI·待核` 退出、倾向拆明「与材料一致 / 与教材一致」、E2 封顶）→ 读 `prompts/quickstart.zh.md`「学习向证据档位」。左列只进附录/审计块。
 
 ## 材料索引（按需打开，勿回贴全文）
 

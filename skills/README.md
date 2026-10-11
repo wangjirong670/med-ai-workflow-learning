@@ -12,7 +12,7 @@
 - 触发示例：整理笔记 / 帮我揉一下 / 学习钉子 / 自测卡 / 我填了 X 对吗  
 - 红线摘要在 SKILL.md；E 表、坏输出表等外置到 `prompts/quickstart.zh.md` 对应节  
 - 版本钉子：`prompts/quickstart.zh.md`（v3.1+）· `docs/method.zh.md`  
-- 冒烟样例（1 次，人工套规则，**非**自动加载验证）：[`../docs/skill-smoke-formA-1x.md`](../docs/skill-smoke-formA-1x.md)
+- 冒烟样例（1 次，人工套规则，**非**自动加载验证）：[`../tests/results/skill-behavior-B-2026-10-12.md`](../tests/results/skill-behavior-B-2026-10-12.md)
 
 ## 安装 / 加载（MiMo SKILL.md）
 
@@ -43,7 +43,7 @@ python skills/med-study-knead/scripts/check_resolve.py --root <repo-or-any-root>
 PowerShell（把 `<repo>` 换成你的本地仓路径）：
 
 ```powershell
-$repo = "<path-to>/med-ai-workflow"   # 例：C:/Users/<you>/XiaomiMiMoProjects/med-ai-workflow
+$repo = "<path-to-repo>"   # 例：<path-to-repo>
 New-Item -ItemType Directory -Force -Path "$repo/.mimocode/skills" | Out-Null
 Copy-Item -Recurse -Force "$repo/skills/med-study-knead" "$repo/.mimocode/skills/med-study-knead"
 ```
@@ -53,7 +53,7 @@ Copy-Item -Recurse -Force "$repo/skills/med-study-knead" "$repo/.mimocode/skills
 对所有会话可见；仍建议在本仓工作目录下使用，以便解析 prompt 路径：
 
 ```powershell
-$repo = "<path-to>/med-ai-workflow"
+$repo = "<path-to-repo>"
 $skills = Join-Path $HOME ".config/mimocode/skills/med-study-knead"
 # Windows 典型：C:\Users\<you>\.config\mimocode\skills\med-study-knead
 Copy-Item -Recurse -Force "$repo/skills/med-study-knead" $skills
@@ -65,7 +65,7 @@ Copy-Item -Recurse -Force "$repo/skills/med-study-knead" $skills
 
 1. 新会话里说「帮我揉一下这份乱笔记」，确认走学习向工作流（人话默认、红线在）。  
 2. 若输出像普通聊天，检查 skill 是否在技能根、名称是否 `med-study-knead`、是否已重启会话。  
-3. 当前仓库只有**人工** formA 冒烟；**Agent 自动加载 / 依赖解析**的集成测试未做（见 `docs/testing-status.md`）。
+3. 详见 `docs/testing-status.md` 与 `tests/results/`（catalog/依赖解析已有冒烟记录）。
 
 ## 约束
 
@@ -77,4 +77,3 @@ Copy-Item -Recurse -Force "$repo/skills/med-study-knead" $skills
 ## 路线
 
 - ~~阶段 B~~ **2026-10-12 已做**：`scripts/sync_from_prompt.py` 生成 `references/snapshot/`（MANIFEST 含 sha256）；SKILL 双模式依赖；集成冒烟见 `tests/results/`  
-- **阶段 C（未做）**：测试结果全面进 `tests/results/`；用例定义与运行记录分离；红线重复次数  

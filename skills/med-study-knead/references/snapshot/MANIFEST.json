@@ -1,23 +1,23 @@
 {
-  "generated_at": "2026-10-11T17:50:53Z",
+  "generated_at": "2026-10-11T19:37:20Z",
   "generator": "skills/med-study-knead/scripts/sync_from_prompt.py",
   "prompt_version": "学习向 · 一键试用 v3.1",
   "sources": [
     {
       "id": "quickstart",
       "source_relpath": "prompts/quickstart.zh.md",
-      "source_sha256": "e18d343ab5654a6c1b9a35a4c9fa9967ad61906effb4353e380d2f6498e973c0",
+      "source_sha256": "901fa2d9a92288347b622369168ae60eac4be3112d9abae838f2dca30ede97c1",
       "snapshot_relpath": "references/snapshot/quickstart.snapshot.md",
       "role": "权威 L1 学习向 prompt（红线/证据档位/输出/坏输出）",
-      "bytes": 10461
+      "bytes": 10767
     },
     {
       "id": "method",
       "source_relpath": "docs/method.zh.md",
-      "source_sha256": "33662895c04cac2094cc1894e106426fea1866aa19e33f74a616609e9b6457d4",
+      "source_sha256": "ccffa34612eef285999ca9d13a720c81e3c483d8619bb1043a639f115dbfd4ae",
       "snapshot_relpath": "references/snapshot/method.snapshot.md",
       "role": "双轨纪律（循环/证据纪律/范围切割/勘误）",
-      "bytes": 3646
+      "bytes": 3644
     }
   ],
   "note": "Snapshot is generated. Authority remains prompts/quickstart.zh.md. Re-run script after prompt edits."
