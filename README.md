@@ -74,7 +74,7 @@ AI 负责把材料拆成可核对的结构，**拍板留给人**。它不宣布�
 | 英文输入或英文提示词 | 未测（提示词目前只有中文版） |
 | 跨模型 | 未测 |
 
-三项通过只能说明冒烟测试没出问题，**不等于红线可靠**。用例见 [`tests/redline-cases.md`](tests/redline-cases.md)（[English](tests/redline-cases.en.md)），欢迎补充和打脸。
+三项通过只能说明冒烟测试没出问题，**不等于红线可靠**。用例见 [`tests/redline-cases.md`](tests/redline-cases.md)（[English](tests/redline-cases.en.md)），欢迎补充反例与失败案例。
 
 ## 仓库结构
 
@@ -85,7 +85,7 @@ shared/                          双轨共用纪律（档位定义各轨自定�
 clinical/SCOPE.md                临床向边界。未开工，不提供主流程
 tests/                           红线与行为测试用例
 docs/                            测试水位与发布清单
-archive/                         旧版本，仅供对照（不保证纳入发布）
+archive/                         旧版本，仅供对照
 ```
 
 学习向与临床向目录分开；每轨下 prompt / skill / harness 分开。

@@ -87,7 +87,7 @@ shared/                          Cross-track discipline (grades defined per trac
 clinical/SCOPE.md                Clinical-track scope. Not started; no main flow
 tests/                           Red-line and behavior cases
 docs/                            Test status, publish checklist
-archive/                         Legacy drafts (not guaranteed in releases)
+archive/                         Older versions, for comparison only
 ```
 
 Study vs clinical tracks are separate directories; prompt / skill / harness are separate under each track.
