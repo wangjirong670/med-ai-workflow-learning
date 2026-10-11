@@ -7,3 +7,5 @@ An English prompt is **not** published yet. Red-line wording, `AI·待核`, and 
 **To use today:** paste the Chinese dialogue block from `quickstart.zh.md`, then write your material in Chinese (or accept untested cross-language behavior).
 
 See [`../tests/redline-cases.en.md`](../tests/redline-cases.en.md).
+
+Also: textbook-like notes / LLM rewrites are **capped at E2** until verified against real edition+pages (see quickstart.zh.md).

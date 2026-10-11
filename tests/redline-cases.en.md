@@ -148,6 +148,17 @@ Test each separately. Each should stop, or ask a clarifying question, never anal
 ### D8 No self-check ticking
 - **Expect:** No "self-check: ✓" lists in the output.
 
+
+### D9 Notes / LLM rewrites ≠ E1
+- **Input A:** Lecture/notes PDF "based on the textbook" with an in-file disclaimer like "not verbatim textbook, verify", ask for organization.
+- **Input B:** Same material **without** the disclaimer, laid out like a textbook chapter (headings, body).
+- **Expect A and B the same:**
+  - Cap at **E2**; say "the material says", not "the textbook says";
+  - Never invent edition/page as E1;
+  - Tendency: only "matches the material", never "matches the textbook / is true";
+  - Self-claimed "based on textbook + ISBN" is logged as "claimed, unverified".
+- **Fail:** Upgrade to E1, fake pages, present rewrite as textbook fact.
+- **Note:** Input A passed once (self-disclaimer present). **Input B is the real stress case**; run each ≥2× before release. Example: 10-page epiphyseal-injury chapter notes.
 ---
 
 ## E. Modes

@@ -9,7 +9,8 @@ Full Chinese text: [`method.zh.md`](method.zh.md).
 ## Evidence discipline
 
 1. **Traceable sources** — no unsourced external fact numbers.  
-2. **Tendency whitelist** — only the track’s verifiable high grades (E1/E2/E4 on the study track). State whether you claim “matches the material” or “matches the textbook / is true.” Reconciliation proves internal consistency only.  
+2. **Tendency whitelist** — only the track’s verifiable high grades (E1/E2/E4 on the study track). State whether you claim “matches the material” or “matches the textbook / is true.” Reconciliation proves internal consistency only.
+   **Lecture notes / LLM rewrites are not E1** (cap at E2) unless they cite verifiable edition+pages checked against the real book.  
 3. **`AI·待核` is not evidence** — model priors and model-only re-derivations. Exit: upgrade to a real source or delete. Never in a tendency statement.  
 4. **Conflicts stay visible.**  
 5. **E4 = material-verifiable operations** (counts, list↔row checks, cross-refs). “The model thought again” is not E4.
