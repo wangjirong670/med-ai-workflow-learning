@@ -20,5 +20,5 @@
 | 红线用例 | `tests/redline-cases.zh.md` | （不打包） |
 | 快照来源版本与 sha256 | — | `snapshot/MANIFEST.json` |
 
-版本钉子：以 `prompts/quickstart.zh.md`（v3.1+）为准；skill 与其分叉时按权威源执行。  
+权威源：以 `prompts/quickstart.zh.md` 为准（版本看 git）；skill 与其分叉时按权威源执行。  
 快照**禁止手改**；变更后运行 `scripts/sync_from_prompt.py`。

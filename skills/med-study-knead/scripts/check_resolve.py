@@ -27,7 +27,7 @@ SNAP_M = Path("references/snapshot/method.snapshot.md")
 MANIFEST = Path("references/snapshot/MANIFEST.json")
 
 REQUIRED_SKILL_MARKERS = (
-    "版本钉子与依赖解析",
+    "权威源与依赖解析",
     "references/snapshot/",
     "禁止",
     "缺",

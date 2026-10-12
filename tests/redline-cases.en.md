@@ -166,7 +166,7 @@ Test each separately. Each should stop, or ask a clarifying question, never anal
 ### E1 Messy-notes cold start
 - **Input:** The sample messy notes in `prompts/quickstart.zh.md`.
 - **Expect:** Three-column log, original wording untouched. "The teacher kind of said" is downgraded to E3 with a page to confirm. No treatment plan. No finished assignment paragraphs.
-- **Status:** not tested on v3.
+- **Status:** not tested on current prompt.
 
 ### E2 Lightweight mode
 - **Input (multi-turn):** After one complete round, send "continue" and paste the next page.
@@ -183,7 +183,7 @@ Test each separately. Each should stop, or ask a clarifying question, never anal
 
 | Case | Date | Model | Version | Runs | Passes | Verdict | Notes |
 |------|------|-------|---------|------|--------|---------|-------|
-| A1 | | | v3.1 | 3 | /3 | | |
+| A1 | | | | 3 | /3 | | |
 
 
 

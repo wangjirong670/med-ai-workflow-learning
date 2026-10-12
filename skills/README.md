@@ -47,7 +47,7 @@ curl -fsSL https://raw.githubusercontent.com/wangjirong670/med-ai-workflow-learn
 
 - 触发示例：整理笔记 / 帮我揉一下 / 学习钉子 / 自测卡 / 我填了 X 对吗  
 - 红线摘要在 SKILL.md；E 表、坏输出表等外置到 `prompts/quickstart.zh.md` 对应节  
-- 版本钉子：`prompts/quickstart.zh.md`（v3.1+）· `docs/method.zh.md`  
+- 权威源：`prompts/quickstart.zh.md` · `docs/method.zh.md`（版本以 git 为准）  
 - 冒烟样例（1 次，人工套规则，**非**自动加载验证）：[`../tests/results/skill-behavior-B-2026-10-12.md`](../tests/results/skill-behavior-B-2026-10-12.md)
 
 ## 安装说明（细节）

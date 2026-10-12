@@ -5,7 +5,6 @@ license: MIT
 metadata:
   track: learning
   prompt-pin: prompts/quickstart.zh.md
-  prompt-version: v3.1+
   layer: L2
   snapshot: references/snapshot/
 ---
@@ -15,9 +14,9 @@ metadata:
 学习向 L1 的可加载封装：把课业乱材料揉成**可辩护**的复习结构。  
 循环：**人乱扔 → AI 揉 → 人拍板**。不确定写不确定。
 
-## 版本钉子与依赖解析（不可分叉）
+## 权威源与依赖解析（不可分叉）
 
-**权威源** = 仓内 `prompts/quickstart.zh.md`（学习向一键试用 v3.1+）。  
+**权威源** = 仓内 `prompts/quickstart.zh.md`（版本以 git 为准，不在文中写自定义号）。  
 **纪律源** = `docs/method.zh.md`（无 E 档定义）。
 
 解析顺序（按能找到的最高档执行，禁止跳档假装齐全）：
@@ -74,7 +73,7 @@ metadata:
 
 ## 材料索引（按需打开，勿回贴全文）
 
-权威路径优先；不可达时用 `references/snapshot/` 下同名内容（见上「版本钉子」）。
+权威路径优先；不可达时用 `references/snapshot/` 下同名内容（见上「权威源与依赖解析」）。
 
 | 需要 | 打开 |
 |------|------|

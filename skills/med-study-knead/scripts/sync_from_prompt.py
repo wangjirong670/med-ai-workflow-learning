@@ -117,18 +117,11 @@ def main() -> int:
         )
         print(f"wrote {out_path} sha256={digest[:12]}…")
 
-    # Detect prompt version from quickstart title line
-    qtext = (repo / "prompts" / "quickstart.zh.md").read_text(encoding="utf-8")
-    prompt_version = "unknown"
-    for line in qtext.splitlines()[:5]:
-        if "v3" in line or "一键试用" in line:
-            prompt_version = line.strip().lstrip("# ").strip()
-            break
-
+    # Version identity is git + content hash (no custom version strings)
     manifest = {
         "generated_at": generated_at,
         "generator": "skills/med-study-knead/scripts/sync_from_prompt.py",
-        "prompt_version": prompt_version,
+        "version_policy": "git history + source sha256; no custom version labels",
         "sources": entries,
         "note": "Snapshot is generated. Authority remains prompts/quickstart.zh.md. Re-run script after prompt edits.",
     }

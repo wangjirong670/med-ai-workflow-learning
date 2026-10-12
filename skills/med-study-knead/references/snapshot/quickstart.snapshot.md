@@ -2,14 +2,14 @@
 <!--
 source_id: quickstart
 source_relpath: prompts/quickstart.zh.md
-source_sha256: 1622325f138adf8eef8622d7a73d6a04173de6349fc911e695295ab65c6ad475
-generated_at: 2026-10-12T13:49:30Z
+source_sha256: 00d9fcf4475540481c7b1c48a27e006cf10f12708b48af38553b64ed98c76996
+generated_at: 2026-10-12T14:01:51Z
 generator: skills/med-study-knead/scripts/sync_from_prompt.py
 -->
 > **快照说明**：本文件由脚本从 `prompts/quickstart.zh.md` 生成，供 Skill 在无法解析仓内权威路径时回退使用。
 > 权威源仍是仓内 `prompts/quickstart.zh.md`；冲突以权威源为准。运行 `scripts/sync_from_prompt.py` 可重新生成。
 
-# 学习向 · 一键试用 v3.1
+# 学习向 · 对话块
 
 > 复制【对话块】到任意 AI 对话 → 粘贴你的课业材料。  
 > 轨道：**学习向**（课业/理解/复习）。  
