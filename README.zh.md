@@ -65,3 +65,10 @@
 ## License
 
 [MIT](LICENSE) · 姊妹仓（临床向）：[med-ai-workflow-clinical](https://github.com/wangjirong670/med-ai-workflow-clinical)
+
+## 怎么反馈
+
+朋友在用：不对劲就开 Issue。  
+红线问题（代写、真患者没停、误杀教材题…）→ 用模板 **反例 / 行为不对**（只给输入摘要 + 1–3 句关键输出，不要贴完整对话）。  
+体验建议 → **体验 / 功能建议**。  
+红线优先于功能请求。

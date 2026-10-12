@@ -3,7 +3,7 @@
 source_id: method
 source_relpath: docs/method.zh.md
 source_sha256: ccffa34612eef285999ca9d13a720c81e3c483d8619bb1043a639f115dbfd4ae
-generated_at: 2026-10-11T19:37:20Z
+generated_at: 2026-10-12T13:38:01Z
 generator: skills/med-study-knead/scripts/sync_from_prompt.py
 -->
 > **快照说明**：本文件由脚本从 `docs/method.zh.md` 生成，供 Skill 在无法解析仓内权威路径时回退使用。

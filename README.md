@@ -65,3 +65,7 @@
 ## License
 
 [MIT](LICENSE)
+
+## Feedback
+
+Open an Issue. Red-line counterexamples use the **反例** template (summary only, no full chats). Red lines outrank features.
