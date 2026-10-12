@@ -3,41 +3,23 @@
 把 [`../prompts/quickstart.zh.md`](../prompts/quickstart.zh.md) 的方法论打成可被 agent 加载的 skill 包。  
 **权威源仍是 prompt**；skill 只做薄封装，冲突时以 prompt 为准。
 
-## 一键安装（Agent 通用）
+## 一键安装
 
-技能包是标准 **`<目录>/<skill>/SKILL.md`** 布局，**凡是支持这种 skill 目录的 agent 都能用**（不限 MiMo / Claude）。
-
-**Windows（PowerShell）**
+标准 **`<skills目录>/med-study-knead/SKILL.md`**，agent 通用。
 
 ```powershell
 irm https://raw.githubusercontent.com/wangjirong670/med-ai-workflow-learning/main/install.ps1 | iex
 ```
 
-**macOS / Linux**
+```powershell
+.\install.ps1 -Target "<your-skills-dir>"
+```
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/wangjirong670/med-ai-workflow-learning/main/install.sh | bash
 ```
 
-**自定义目标（推荐给任意 agent）**
-
-```powershell
-.\install.ps1 -Target "<你的 skills 目录>"
-# 例：.\install.ps1 -Target "$HOME/.config/myagent/skills"
-```
-
-```bash
-./install.sh ~/.config/myagent/skills
-```
-
-脚本会：
-1. 使用本地 `skills/med-study-knead/`（没有则从 GitHub 拉 zip）
-2. 拷贝到默认通用目录 `~/.skills/`（便携包）
-3. 自动探测已存在的常见 skills 根（项目/用户级），不存在则跳过；`-All` / `ALL=1` 强制写入探测列表
-4. 每个目标都是：`<root>/med-study-knead/{SKILL.md, references/, scripts/}`
-
-装完：**新开会话**，让 agent 加载 `med-study-knead`，或直接说「帮我揉一下这页药理课业笔记」。  
-也可以把该文件夹 **symlink** 进你自己的技能目录。
+装完新开会话即可。也可手动拷贝 `med-study-knead/` 或 symlink。
 
 ## 已发布
 

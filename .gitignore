@@ -16,3 +16,10 @@ desktop.ini
 
 # 本机 skill 安装副本（源在 skills/）
 .mimocode/
+# 过程稿 / 运行原始档（不进公开仓）
+tests/results/
+tests/local/
+*.raw.txt
+*-raw.txt
+docs/RELEASE-CHECK.md
+docs/NEXT-queue.md
