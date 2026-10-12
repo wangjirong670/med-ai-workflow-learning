@@ -1,9 +1,14 @@
 #!/usr/bin/env pwsh
-# med-study-knead one-shot installer (Windows / PowerShell 7+)
+# med-study-knead — generic SKILL.md installer
+# Works with any agent that loads a folder named <skill>/SKILL.md.
+#
 # Local:   .\install.ps1
 # Remote:  irm https://raw.githubusercontent.com/wangjirong670/med-ai-workflow-learning/main/install.ps1 | iex
 #
-# Installs the skill package into known agent skill roots.
+# Examples:
+#   .\install.ps1 -Target "$HOME/.config/myagent/skills"
+#   .\install.ps1 -All
+#   .\install.ps1 -PrintOnly
 
 [CmdletBinding()]
 param(
@@ -23,34 +28,21 @@ function Write-Info([string]$msg) { Write-Host "[install] $msg" }
 function Write-Ok([string]$msg)   { Write-Host "[install] OK  $msg" -ForegroundColor Green }
 function Write-Skip([string]$msg) { Write-Host "[install] --  $msg" -ForegroundColor Yellow }
 
-function Get-DefaultRoots {
-    $roots = [System.Collections.Generic.List[string]]::new()
-    $homeDir = [Environment]::GetFolderPath("UserProfile")
-    if (-not $homeDir) { $homeDir = $env:USERPROFILE }
-
-    # MiMo Desktop global
-    $roots.Add((Join-Path $homeDir ".config/mimocode/skills"))
-    # Claude Code style
-    $roots.Add((Join-Path $homeDir ".claude/skills"))
-    # Cursor / generic
-    $roots.Add((Join-Path $homeDir ".cursor/skills"))
-    return $roots
+function Get-HomeDir {
+    $d = [Environment]::GetFolderPath("UserProfile")
+    if ($d) { return $d }
+    return $env:USERPROFILE
 }
 
 function Find-LocalRepo {
     if ($Repo -and (Test-Path (Join-Path $Repo "skills/$SkillName/SKILL.md"))) {
         return (Resolve-Path $Repo).Path
     }
-    # script lives in repo root when cloned
-    if ($PSScriptRoot) {
-        $cand = $PSScriptRoot
-        if (Test-Path (Join-Path $cand "skills/$SkillName/SKILL.md")) {
-            return $cand
-        }
+    if ($PSScriptRoot -and (Test-Path (Join-Path $PSScriptRoot "skills/$SkillName/SKILL.md"))) {
+        return $PSScriptRoot
     }
-    # walk up from cwd
     $dir = (Get-Location).Path
-    for ($i = 0; $i -lt 6 -and $dir; $i++) {
+    for ($i = 0; $i -lt 8 -and $dir; $i++) {
         if (Test-Path (Join-Path $dir "skills/$SkillName/SKILL.md")) { return $dir }
         $parent = Split-Path $dir -Parent
         if ($parent -eq $dir) { break }
@@ -68,11 +60,10 @@ function Get-SkillSource {
     }
     $repoRoot = Find-LocalRepo
     if ($repoRoot) {
-        Write-Info "using local skill from $repoRoot\skills\$SkillName"
+        Write-Info "using local package $repoRoot\skills\$SkillName"
         return (Join-Path $repoRoot "skills/$SkillName")
     }
-    # download from GitHub
-    Write-Info "local repo not found; downloading $ZipUrl"
+    Write-Info "no local package; downloading $ZipUrl"
     $tmp = Join-Path ([System.IO.Path]::GetTempPath()) ("med-study-knead-" + [guid]::NewGuid().ToString("n"))
     New-Item -ItemType Directory -Path $tmp | Out-Null
     $zip = Join-Path $tmp "src.zip"
@@ -81,16 +72,52 @@ function Get-SkillSource {
     $found = Get-ChildItem -Path $tmp -Recurse -Filter "SKILL.md" |
         Where-Object { $_.Directory.Name -eq $SkillName } |
         Select-Object -First 1
-    if (-not $found) { throw "downloaded zip has no skills/$SkillName/SKILL.md" }
+    if (-not $found) { throw "zip has no skills/$SkillName/SKILL.md" }
     return $found.Directory.FullName
 }
 
-function Install-To([string]$destRoot) {
+# Any agent that stores skills as <root>/<name>/SKILL.md.
+# Unknown roots are fine — use -Target. Known names are only probes.
+function Get-CandidateRoots {
+    $h = Get-HomeDir
+    $cwd = (Get-Location).Path
+    return @(
+        # universal / local package
+        (Join-Path $h ".skills"),
+        (Join-Path $h ".local/share/agent-skills"),
+        (Join-Path $h ".config/agent-skills"),
+        # project-local
+        (Join-Path $cwd ".mimocode/skills"),
+        (Join-Path $cwd ".claude/skills"),
+        (Join-Path $cwd ".cursor/skills"),
+        (Join-Path $cwd ".agents/skills"),
+        (Join-Path $cwd "skills"),
+        # user-level agents (only if dir already exists, unless -All)
+        (Join-Path $h ".config/mimocode/skills"),
+        (Join-Path $h ".claude/skills"),
+        (Join-Path $h ".cursor/skills"),
+        (Join-Path $h ".codex/skills"),
+        (Join-Path $h ".gemini/skills"),
+        (Join-Path $h ".agents/skills"),
+        (Join-Path $h ".config/continue/skills"),
+        (Join-Path $h ".config/skills")
+    )
+}
+
+function Install-To([string]$destRoot, [string]$src) {
     $dest = Join-Path $destRoot $SkillName
-    New-Item -ItemType Directory -Path $destRoot -Force | Out-Null
-    if (Test-Path $dest) {
-        Remove-Item -Recurse -Force $dest
+    $srcFull = (Resolve-Path $src).Path.TrimEnd('\', '/')
+    $destParent = if (Test-Path $dest) { (Resolve-Path $dest).Path.TrimEnd('\', '/') } else { $dest }
+    if ($destParent -eq $srcFull) {
+        Write-Skip "skip (same as source): $dest"
+        return
     }
+    if ($destRoot -eq (Split-Path $srcFull -Parent)) {
+        Write-Skip "skip (source tree): $destRoot"
+        return
+    }
+    New-Item -ItemType Directory -Path $destRoot -Force | Out-Null
+    if (Test-Path $dest) { Remove-Item -Recurse -Force $dest }
     Copy-Item -Recurse -Force $src $dest
     Write-Ok "installed -> $dest"
 }
@@ -98,41 +125,45 @@ function Install-To([string]$destRoot) {
 try {
     $src = Get-SkillSource
     Write-Info "skill source: $src"
+    Write-Info "format: SKILL.md skill folder (any agent that loads this layout)"
 
     $targets = [System.Collections.Generic.List[string]]::new()
     if ($Target) {
         $targets.Add($Target)
     } else {
-        $roots = Get-DefaultRoots
-        foreach ($r in $roots) {
-            # only auto-install into roots that exist, unless -All or first MiMo path
-            $isMimo = $r -like "*mimocode*"
-            if ($All -or $isMimo -or (Test-Path $r)) {
+        foreach ($r in Get-CandidateRoots) {
+            $exists = Test-Path $r
+            $universal = $r -like "*.skills" -or $r -like "*agent-skills*"
+            $project = $r -like "*$((Get-Location).Path)*" -or $r -like "*.mimocode*" -or $r -like "*\.claude\skills" -or $r -like "*\.cursor\skills" -or $r -like "*\.agents\skills"
+            if ($exists -or $universal -or ($project -and $All)) {
+                $targets.Add($r)
+            } elseif ($exists) {
                 $targets.Add($r)
             } else {
-                Write-Skip "skip (missing): $r"
+                Write-Skip "skip (absent, use -Target or -All): $r"
             }
         }
-        # project-local MiMo skill root when cwd looks like a project
-        $proj = Join-Path (Get-Location).Path ".mimocode/skills"
-        if ($All -or (Test-Path (Join-Path (Get-Location).Path ".git")) -or (Test-Path (Join-Path (Get-Location).Path "prompts"))) {
-            $targets.Add($proj)
-        }
+        # always drop one portable copy under ~/.skills
+        $targets.Add((Join-Path (Get-HomeDir) ".skills"))
+        $targets.Add((Join-Path (Get-Location).Path ".mimocode/skills"))
     }
 
+    $targets = $targets | Select-Object -Unique
+
     if ($PrintOnly) {
-        Write-Host "Would install $src to:"
-        $targets | ForEach-Object { Write-Host "  $_/$SkillName" }
+        Write-Host "Would copy $src ->"
+        $targets | ForEach-Object { Write-Host "  $(Join-Path $_ $SkillName)" }
         return
     }
 
-    foreach ($t in $targets | Select-Object -Unique) {
-        Install-To $t
+    foreach ($t in $targets) {
+        if ($t) { Install-To $t $src }
     }
 
     Write-Host ""
-    Write-Ok "done. Restart the agent session or open a new chat, then try:"
-    Write-Host "  帮我揉一下这页骨伤课业笔记（药学/医学材料）"
+    Write-Ok "done. Package is standard: <dir>/$SkillName/SKILL.md"
+    Write-Host "Point any SKILL.md-capable agent at one of those folders (or symlink it)."
+    Write-Host "New session, then e.g.:  帮我揉一下这页药理课业笔记"
     Write-Host "Docs: $RepoUrl/blob/main/skills/README.md"
 }
 catch {

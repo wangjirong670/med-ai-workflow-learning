@@ -3,7 +3,9 @@
 把 [`../prompts/quickstart.zh.md`](../prompts/quickstart.zh.md) 的方法论打成可被 agent 加载的 skill 包。  
 **权威源仍是 prompt**；skill 只做薄封装，冲突时以 prompt 为准。
 
-## 一键安装
+## 一键安装（Agent 通用）
+
+技能包是标准 **`<目录>/<skill>/SKILL.md`** 布局，**凡是支持这种 skill 目录的 agent 都能用**（不限 MiMo / Claude）。
 
 **Windows（PowerShell）**
 
@@ -17,16 +19,25 @@ irm https://raw.githubusercontent.com/wangjirong670/med-ai-workflow-learning/mai
 curl -fsSL https://raw.githubusercontent.com/wangjirong670/med-ai-workflow-learning/main/install.sh | bash
 ```
 
-**已 clone 本仓**
+**自定义目标（推荐给任意 agent）**
 
 ```powershell
-.\install.ps1          # 装到 MiMo 全局 + 当前项目 .mimocode/skills
-.\install.ps1 -All     # 顺带 Claude / Cursor 目录（若存在）
-.\install.ps1 -Target <dir>   # 自定义
+.\install.ps1 -Target "<你的 skills 目录>"
+# 例：.\install.ps1 -Target "$HOME/.config/myagent/skills"
 ```
 
-装完：**新开会话**，说「帮我揉一下这页骨伤课业笔记」或 `/med-study-knead`。  
-脚本会把 `skills/med-study-knead/`（含 `references/snapshot/`）拷进各技能根；自动跳过不存在的目录。
+```bash
+./install.sh ~/.config/myagent/skills
+```
+
+脚本会：
+1. 使用本地 `skills/med-study-knead/`（没有则从 GitHub 拉 zip）
+2. 拷贝到默认通用目录 `~/.skills/`（便携包）
+3. 自动探测已存在的常见 skills 根（项目/用户级），不存在则跳过；`-All` / `ALL=1` 强制写入探测列表
+4. 每个目标都是：`<root>/med-study-knead/{SKILL.md, references/, scripts/}`
+
+装完：**新开会话**，让 agent 加载 `med-study-knead`，或直接说「帮我揉一下这页药理课业笔记」。  
+也可以把该文件夹 **symlink** 进你自己的技能目录。
 
 ## 已发布
 
