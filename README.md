@@ -16,7 +16,7 @@
 ```
 
 - L1 Prompt：[`prompts/quickstart.zh.md`](prompts/quickstart.zh.md)  
-- L2 Skill：[`skills/med-study-knead/`](skills/med-study-knead/)  
+- L2 Skill：[`skills/med-study-knead/`](skills/med-study-knead/) — 一键安装 `irm https://raw.githubusercontent.com/wangjirong670/med-ai-workflow-learning/main/install.ps1 \| iex`  
 - 测试汇总：[`docs/testing-status.md`](docs/testing-status.md)
 
 **冒烟通过 ≠ 红线可靠。** License: [MIT](LICENSE)。
