@@ -14,12 +14,21 @@ human dumps → AI kneads → human decides
 
 Standard **`SKILL.md` skill folder** — any agent that loads that layout.
 
-```powershell
-irm https://raw.githubusercontent.com/wangjirong670/med-ai-workflow-learning/main/install.ps1 | iex
-```
+| OS | One line |
+|----|----------|
+| **Windows** | `irm https://raw.githubusercontent.com/wangjirong670/med-ai-workflow-learning/main/install.ps1 \| iex` |
+| **macOS / Linux** | `curl -fsSL https://raw.githubusercontent.com/wangjirong670/med-ai-workflow-learning/main/install.sh \| bash` |
+
+Custom skills directory (any OS):
 
 ```powershell
+# Windows
 .\install.ps1 -Target "<your-skills-dir>"
+```
+
+```bash
+# macOS / Linux
+./install.sh <your-skills-dir>
 ```
 
 Or paste the L1 dialogue block from [`prompts/quickstart.zh.md`](prompts/quickstart.zh.md) (Chinese; EN prompt not shipped).

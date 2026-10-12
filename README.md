@@ -19,18 +19,21 @@
 
 任意能加载 **`<skills目录>/<name>/SKILL.md`** 的 agent 都可用（不限定某一家产品）。
 
+| OS | 一条命令 |
+|----|----------|
+| **Windows** | `irm https://raw.githubusercontent.com/wangjirong670/med-ai-workflow-learning/main/install.ps1 \| iex` |
+| **macOS / Linux** | `curl -fsSL https://raw.githubusercontent.com/wangjirong670/med-ai-workflow-learning/main/install.sh \| bash` |
+
+指定技能目录（任意 OS）：
+
 ```powershell
-irm https://raw.githubusercontent.com/wangjirong670/med-ai-workflow-learning/main/install.ps1 | iex
+# Windows
+.\install.ps1 -Target "<your-skills-dir>"
 ```
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/wangjirong670/med-ai-workflow-learning/main/install.sh | bash
-```
-
-或指定自己的技能目录：
-
-```powershell
-.\install.ps1 -Target "<your-skills-dir>"
+# macOS / Linux
+./install.sh <your-skills-dir>
 ```
 
 也可直接使用纯文本 L1：复制 [`prompts/quickstart.zh.md`](prompts/quickstart.zh.md) 的【对话块】到任意对话。

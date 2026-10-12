@@ -23,12 +23,21 @@
 
 技能包是标准 **`SKILL.md` 目录**，任意支持该格式的 agent 可用。
 
-```powershell
-irm https://raw.githubusercontent.com/wangjirong670/med-ai-workflow-learning/main/install.ps1 | iex
-```
+| 系统 | 一条命令 |
+|------|----------|
+| **Windows** | `irm https://raw.githubusercontent.com/wangjirong670/med-ai-workflow-learning/main/install.ps1 \| iex` |
+| **macOS / Linux** | `curl -fsSL https://raw.githubusercontent.com/wangjirong670/med-ai-workflow-learning/main/install.sh \| bash` |
+
+指定目录（任意系统）：
 
 ```powershell
+# Windows
 .\install.ps1 -Target "<你的 skills 目录>"
+```
+
+```bash
+# macOS / Linux
+./install.sh <你的 skills 目录>
 ```
 
 或纯文本 L1：复制 [`prompts/quickstart.zh.md`](prompts/quickstart.zh.md) 的【对话块】到任意对话。

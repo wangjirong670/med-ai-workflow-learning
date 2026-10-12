@@ -7,19 +7,37 @@
 
 标准 **`<skills目录>/med-study-knead/SKILL.md`**，agent 通用。
 
+### Windows（PowerShell 5+ / 7+）
+
 ```powershell
 irm https://raw.githubusercontent.com/wangjirong670/med-ai-workflow-learning/main/install.ps1 | iex
 ```
 
+已 clone 本仓时：
+
 ```powershell
+.\install.ps1
 .\install.ps1 -Target "<your-skills-dir>"
 ```
+
+### macOS / Linux
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/wangjirong670/med-ai-workflow-learning/main/install.sh | bash
 ```
 
-装完新开会话即可。也可手动拷贝 `med-study-knead/` 或 symlink。
+已 clone 本仓时：
+
+```bash
+./install.sh
+./install.sh ~/.config/myagent/skills
+```
+
+### 任意 OS · 手动
+
+把 `skills/med-study-knead/` 拷进（或 symlink 到）你的技能目录即可。
+
+装完新开会话即可使用。
 
 ## 已发布
 
