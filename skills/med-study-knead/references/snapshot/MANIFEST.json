@@ -1,15 +1,15 @@
 {
-  "generated_at": "2026-10-12T13:38:01Z",
+  "generated_at": "2026-10-12T13:49:30Z",
   "generator": "skills/med-study-knead/scripts/sync_from_prompt.py",
   "prompt_version": "学习向 · 一键试用 v3.1",
   "sources": [
     {
       "id": "quickstart",
       "source_relpath": "prompts/quickstart.zh.md",
-      "source_sha256": "0416d36f3499a9ba307adf0438c2440dcda22a255014d3e7605e3f8bb97005c4",
+      "source_sha256": "1622325f138adf8eef8622d7a73d6a04173de6349fc911e695295ab65c6ad475",
       "snapshot_relpath": "references/snapshot/quickstart.snapshot.md",
       "role": "权威 L1 学习向 prompt（红线/证据档位/输出/坏输出）",
-      "bytes": 11094
+      "bytes": 11438
     },
     {
       "id": "method",
