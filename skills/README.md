@@ -10,7 +10,7 @@
 ### Windows（PowerShell 5+ / 7+）
 
 ```powershell
-irm https://raw.githubusercontent.com/wangjirong670/med-ai-workflow-learning/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/wangjirong670/med-ai-workflow-learning/v0.1.0/install.ps1 | iex
 ```
 
 已 clone 本仓时：
@@ -23,7 +23,7 @@ irm https://raw.githubusercontent.com/wangjirong670/med-ai-workflow-learning/mai
 ### macOS / Linux
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/wangjirong670/med-ai-workflow-learning/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/wangjirong670/med-ai-workflow-learning/v0.1.0/install.sh | bash
 ```
 
 已 clone 本仓时：

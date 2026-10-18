@@ -1,6 +1,7 @@
 ---
 name: med-study-knead
-description: 学习向医学生/药学生课业整理 skill（L2）。处理医学、药学课业材料：乱笔记、书页转写、题库，揉成可辩护学习结构（人乱扔→AI揉→人拍板），默认人话、证据可追、我补的必须标清。Use when user pastes medical or pharmacy coursework, lecture notes, OCR/book pages, or question banks, or asks 整理药理/骨伤/中药等课业/学习钉子/自测卡/我填了X对吗/附录或审计. Study-aid only: no diagnosis, no drug advice, no graded homework answers, stop on real patient material. Do NOT use for clinical decisions, prescriptions, generic non-medical note-taking, or submitting graded work.
+description: >-
+  学习向医学生/药学生课业整理 skill（L2）。处理医学、药学课业材料：乱笔记、书页转写、题库，揉成可辩护学习结构（人乱扔→AI揉→人拍板），默认人话、证据可追、我补的必须标清。Use when user pastes medical or pharmacy coursework, lecture notes, OCR/book pages, or question banks, or asks 整理药理/骨伤/中药等课业/学习钉子/自测卡/我填了X对吗/附录或审计. Study-aid only: no diagnosis, no drug advice, no graded homework answers, stop on real patient material. Do NOT use for clinical decisions, prescriptions, generic non-medical note-taking, or submitting graded work.
 license: MIT
 metadata:
   track: learning

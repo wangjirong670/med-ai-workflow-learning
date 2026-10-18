@@ -10,14 +10,20 @@ human dumps → AI kneads → human decides
 
 **Study aid only. Not medical advice.** No diagnosis, no drug advice, no graded homework. Stops on real patient material.
 
+## Before / after (synthetic)
+
+A fictional messy note about a made-up herb「雾岭草」becomes a pin list with source labels (material vs AI-supplied / pending check) and an "not yet trustworthy" section — see the full example in [README.zh.md](README.zh.md). All content is synthetic, not textbook text.
+
 ## Install
 
 Standard **`SKILL.md` skill folder** — any agent that loads that layout.
 
 | OS | One line |
 |----|----------|
-| **Windows** | `irm https://raw.githubusercontent.com/wangjirong670/med-ai-workflow-learning/main/install.ps1 \| iex` |
-| **macOS / Linux** | `curl -fsSL https://raw.githubusercontent.com/wangjirong670/med-ai-workflow-learning/main/install.sh \| bash` |
+| **Windows** | `irm https://raw.githubusercontent.com/wangjirong670/med-ai-workflow-learning/v0.1.0/install.ps1 \| iex` |
+| **macOS / Linux** | `curl -fsSL https://raw.githubusercontent.com/wangjirong670/med-ai-workflow-learning/v0.1.0/install.sh \| bash` |
+
+Read the script before you run it.
 
 Custom skills directory (any OS):
 
@@ -35,7 +41,9 @@ Or paste the L1 dialogue block from [`prompts/quickstart.zh.md`](prompts/quickst
 
 ## Try it
 
-Use [`examples/formA-notes.md`](examples/formA-notes.md). Expect plain-language structure, source labels (material vs AI-supplied), and check paths — not copy-paste answers.
+Use [`examples/formA-notes.md`](examples/formA-notes.md). Expect: one-line status → study-nail list (main deliverable; material vs AI-supplied labels) → not-yet-trustworthy points → your decisions — not copy-paste answers.
+
+Prompts: free chatbots can use [`prompts/quickstart-lite.zh.md`](prompts/quickstart-lite.zh.md); stronger models/agents use the full [`prompts/quickstart.zh.md`](prompts/quickstart.zh.md). Long books/semesters should be processed chapter by chapter ([`docs/long-material.zh.md`](docs/long-material.zh.md)).
 
 ## Docs
 

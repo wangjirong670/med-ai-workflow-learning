@@ -3,14 +3,14 @@
 # Any agent that loads <root>/<name>/SKILL.md.
 #
 # Local:  ./install.sh
-# Remote: curl -fsSL https://raw.githubusercontent.com/wangjirong670/med-ai-workflow-learning/main/install.sh | bash
+# Remote: curl -fsSL https://raw.githubusercontent.com/wangjirong670/med-ai-workflow-learning/v0.1.0/install.sh | bash
 # Custom: ./install.sh ~/.config/myagent/skills
 #         ALL=1 ./install.sh
 set -euo pipefail
 
 SKILL_NAME="med-study-knead"
 REPO_URL="https://github.com/wangjirong670/med-ai-workflow-learning"
-ZIP_URL="$REPO_URL/archive/refs/heads/main.zip"
+ZIP_URL="$REPO_URL/archive/refs/tags/v0.1.0.zip"
 TARGET="${1:-}"
 ALL="${ALL:-0}"
 
@@ -117,4 +117,4 @@ echo
 ok "done. Package is standard: <dir>/$SKILL_NAME/SKILL.md"
 echo "Point any SKILL.md-capable agent at one of those folders (or symlink it)."
 echo "New session, then e.g.:  帮我揉一下这页药理课业笔记"
-echo "Docs: $REPO_URL/blob/main/skills/README.md"
+echo "Docs: $REPO_URL/blob/v0.1.0/skills/README.md"

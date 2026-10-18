@@ -3,7 +3,7 @@
 # Works with any agent that loads a folder named <skill>/SKILL.md.
 #
 # Local:   .\install.ps1
-# Remote:  irm https://raw.githubusercontent.com/wangjirong670/med-ai-workflow-learning/main/install.ps1 | iex
+# Remote:  irm https://raw.githubusercontent.com/wangjirong670/med-ai-workflow-learning/v0.1.0/install.ps1 | iex
 #
 # Examples:
 #   .\install.ps1 -Target "$HOME/.config/myagent/skills"
@@ -22,7 +22,7 @@ param(
 $ErrorActionPreference = "Stop"
 $SkillName = "med-study-knead"
 $RepoUrl = "https://github.com/wangjirong670/med-ai-workflow-learning"
-$ZipUrl = "$RepoUrl/archive/refs/heads/main.zip"
+$ZipUrl = "$RepoUrl/archive/refs/tags/v0.1.0.zip"
 
 function Write-Info([string]$msg) { Write-Host "[install] $msg" }
 function Write-Ok([string]$msg)   { Write-Host "[install] OK  $msg" -ForegroundColor Green }
@@ -164,7 +164,7 @@ try {
     Write-Ok "done. Package is standard: <dir>/$SkillName/SKILL.md"
     Write-Host "Point any SKILL.md-capable agent at one of those folders (or symlink it)."
     Write-Host "New session, then e.g.:  帮我揉一下这页药理课业笔记"
-    Write-Host "Docs: $RepoUrl/blob/main/skills/README.md"
+    Write-Host "Docs: $RepoUrl/blob/v0.1.0/skills/README.md"
 }
 catch {
     Write-Host "[install] FAIL $($_.Exception.Message)" -ForegroundColor Red

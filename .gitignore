@@ -19,6 +19,7 @@ desktop.ini
 # 过程稿 / 运行原始档（不进公开仓）
 tests/results/
 tests/local/
+docs/_review/
 *.raw.txt
 *-raw.txt
 docs/RELEASE-CHECK.md
