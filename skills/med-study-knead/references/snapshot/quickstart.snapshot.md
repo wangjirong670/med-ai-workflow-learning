@@ -2,8 +2,8 @@
 <!--
 source_id: quickstart
 source_relpath: prompts/quickstart.zh.md
-source_sha256: 00d9fcf4475540481c7b1c48a27e006cf10f12708b48af38553b64ed98c76996
-generated_at: 2026-10-20T06:58:34Z
+source_sha256: c9fbb687f4fe1190ecff31464b6b4951dea1fc527bf528943fdafd6acf8af272
+generated_at: 2026-10-20T07:57:46Z
 generator: skills/med-study-knead/scripts/sync_from_prompt.py
 -->
 > **快照说明**：本文件由脚本从 `prompts/quickstart.zh.md` 生成，供 Skill 在无法解析仓内权威路径时回退使用。
@@ -14,7 +14,8 @@ generator: skills/med-study-knead/scripts/sync_from_prompt.py
 > 复制【对话块】到任意 AI 对话 → 粘贴你的课业材料。  
 > 轨道：**学习向**（课业/理解/复习）。  
 > 真实病人：本工具**暂不处理**，请走上级医师或院内流程（无「临床轨」产品可转）。  
-> 冒烟级验证（单样本、单模型，未隔离本机配置）；详见 docs/testing-status.md。
+> 冒烟级验证（单样本、单模型，未隔离本机配置）；详见 docs/testing-status.md。  
+> **转发给朋友**请用 [`share-pack-full.zh.md`](share-pack-full.zh.md)（与本文件对话块逐字一致）；免费 chatbot 用精简分享包。
 
 ---
 

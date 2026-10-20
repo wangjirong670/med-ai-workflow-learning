@@ -37,13 +37,13 @@ Custom skills directory (any OS):
 ./install.sh <your-skills-dir>
 ```
 
-Or paste the L1 dialogue block from [`prompts/quickstart.zh.md`](prompts/quickstart.zh.md) (Chinese; EN prompt not shipped).
+Or paste the L1 dialogue block from [`prompts/quickstart.zh.md`](prompts/quickstart.zh.md) (Chinese; EN prompt not shipped). **Forwardable packs:** free chatbots → [`share-pack-lite.zh.md`](prompts/share-pack-lite.zh.md); strong models/agents → [`share-pack-full.zh.md`](prompts/share-pack-full.zh.md). Dialogue rules live only in `quickstart.zh.md` / `quickstart-lite.zh.md`.
 
 ## Try it
 
 Use [`examples/formA-notes.md`](examples/formA-notes.md). Expect: one-line status → study-nail list (main deliverable; material vs AI-supplied labels) → not-yet-trustworthy points → your decisions — not copy-paste answers.
 
-Prompts: free chatbots can use [`prompts/quickstart-lite.zh.md`](prompts/quickstart-lite.zh.md); stronger models/agents use the full [`prompts/quickstart.zh.md`](prompts/quickstart.zh.md). Long books/semesters should be processed chapter by chapter ([`docs/long-material.zh.md`](docs/long-material.zh.md)).
+Prompts: free chatbots use [`share-pack-lite.zh.md`](prompts/share-pack-lite.zh.md); stronger models/agents use [`share-pack-full.zh.md`](prompts/share-pack-full.zh.md) or the skill. Long books/semesters should be processed chapter by chapter ([`docs/long-material.zh.md`](docs/long-material.zh.md)).
 
 ## Docs
 

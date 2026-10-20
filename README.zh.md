@@ -28,6 +28,17 @@
 
 每条分清「材料」和「我补的，待你核对」——待核的装不成教材事实。
 
+## 怎么选
+
+| 你是谁 | 用什么 |
+|--------|--------|
+| 朋友用免费 chatbot（豆包等） | 转发 [`prompts/share-pack-lite.zh.md`](prompts/share-pack-lite.zh.md) |
+| 朋友用强模型 / agent | 转发 [`prompts/share-pack-full.zh.md`](prompts/share-pack-full.zh.md) |
+| 装进 agent 长期用 | 下方 Install（skill） |
+| 看规则 / 贡献 | 权威对话块 [`prompts/quickstart.zh.md`](prompts/quickstart.zh.md)（分享包与它逐字一致） |
+
+**用法三句**：① 新开对话，贴对话块再贴材料，说「整理成学习钉子单」；② 不确定写「我补的，待你核对」；③ 真实患者停，作业只给骨架。
+
 ## 这是什么 / 不是什么
 
 | 是 | 不是 |
@@ -59,21 +70,23 @@
 ./install.sh <你的 skills 目录>
 ```
 
-或纯文本 L1：复制 [`prompts/quickstart.zh.md`](prompts/quickstart.zh.md) 的【对话块】到任意对话。
+或纯文本：复制分享包里的【对话块】（免费 → [`share-pack-lite`](prompts/share-pack-lite.zh.md)；强模型 → [`share-pack-full`](prompts/share-pack-full.zh.md)）。规则权威源是 [`prompts/quickstart.zh.md`](prompts/quickstart.zh.md)。
 
 ## 试一下
 
 1. 示例：[`examples/formA-notes.md`](examples/formA-notes.md)  
 2. 已装 skill：直接说「帮我揉一下这页药理课业笔记」  
 3. 期望输出：一句话状态 → 学习钉子单（主交付；标材料/我补的）→ 还不能当真 → 拍板  
-4. 提示词：免费 chatbot 用 [`prompts/quickstart-lite.zh.md`](prompts/quickstart-lite.zh.md)；强模型和 agent 用完整版 [`prompts/quickstart.zh.md`](prompts/quickstart.zh.md)
+4. 免费 chatbot 用 [`share-pack-lite.zh.md`](prompts/share-pack-lite.zh.md)；强模型/agent 用 [`share-pack-full.zh.md`](prompts/share-pack-full.zh.md) 或装 skill
 
 ## 文档
 
 - [`docs/method.zh.md`](docs/method.zh.md) — 循环、证据纪律、范围切割、勘误  
 - [`docs/long-material.zh.md`](docs/long-material.zh.md) — 长材料分章节整理协议（逐章钉子单 + 覆盖清单）  
-- [`prompts/quickstart.zh.md`](prompts/quickstart.zh.md) — L1 全文（红线 / 证据档位 / 输出）  
-- [`prompts/quickstart-lite.zh.md`](prompts/quickstart-lite.zh.md) — L1 轻量（免费 chatbot）  
+- [`prompts/share-pack-lite.zh.md`](prompts/share-pack-lite.zh.md) — 转发包（免费 chatbot）  
+- [`prompts/share-pack-full.zh.md`](prompts/share-pack-full.zh.md) — 转发包（强模型 / agent）  
+- [`prompts/quickstart.zh.md`](prompts/quickstart.zh.md) — L1 权威对话块（红线 / 证据档位 / 输出）  
+- [`prompts/quickstart-lite.zh.md`](prompts/quickstart-lite.zh.md) — L1 精简权威块  
 - [`skills/README.md`](skills/README.md) — 技能包与依赖解析  
 - [`tests/`](tests/) — 红线用例定义（**不要**粘完整对话）  
 - [`docs/testing-status.md`](docs/testing-status.md) — 验证摘要（冒烟级）

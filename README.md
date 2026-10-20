@@ -26,6 +26,17 @@
 
 每条分清「材料」和「我补的，待你核对」——待核的装不成教材事实。
 
+## 怎么选
+
+| 你是谁 | 用什么 |
+|--------|--------|
+| 朋友用免费 chatbot | 转发 [`prompts/share-pack-lite.zh.md`](prompts/share-pack-lite.zh.md) |
+| 朋友用强模型 / agent | 转发 [`prompts/share-pack-full.zh.md`](prompts/share-pack-full.zh.md) |
+| 装进 agent 长期用 | 下方 Install（skill） |
+| 看规则 / 贡献 | 权威对话块 [`prompts/quickstart.zh.md`](prompts/quickstart.zh.md)（分享包与它逐字一致） |
+
+**用法三句**：① 新开对话，贴对话块再贴材料，说「整理成学习钉子单」；② 不确定写「我补的，待你核对」；③ 真实患者停，作业只给骨架。
+
 | | |
 |--|--|
 | 中文说明 | [README.zh.md](README.zh.md) |
@@ -55,7 +66,7 @@
 ./install.sh <your-skills-dir>
 ```
 
-也可直接使用纯文本 L1：复制 [`prompts/quickstart.zh.md`](prompts/quickstart.zh.md) 的【对话块】到任意对话。
+也可直接使用纯文本：复制分享包里的【对话块】（免费 → [`share-pack-lite`](prompts/share-pack-lite.zh.md)；强模型 → [`share-pack-full`](prompts/share-pack-full.zh.md)）。规则权威源是 [`prompts/quickstart.zh.md`](prompts/quickstart.zh.md)。
 
 ## Try it
 
@@ -65,13 +76,15 @@
 
 期望输出：一句话状态 → 学习钉子单（主交付；标材料/我补的）→ 还不能当真 → 拍板；**不是**可抄答案。
 
-提示词：免费 chatbot 用 [`prompts/quickstart-lite.zh.md`](prompts/quickstart-lite.zh.md)；强模型和 agent 用完整版 [`prompts/quickstart.zh.md`](prompts/quickstart.zh.md)。
+免费 chatbot 用 [`share-pack-lite.zh.md`](prompts/share-pack-lite.zh.md)；强模型/agent 用 [`share-pack-full.zh.md`](prompts/share-pack-full.zh.md) 或装 skill。
 
 ## What's inside
 
 | 路径 | 是什么 |
 |------|--------|
-| [`prompts/quickstart.zh.md`](prompts/quickstart.zh.md) | L1 一键提示词（主入口） |
+| [`prompts/share-pack-lite.zh.md`](prompts/share-pack-lite.zh.md) | 转发包（免费 chatbot） |
+| [`prompts/share-pack-full.zh.md`](prompts/share-pack-full.zh.md) | 转发包（强模型 / agent） |
+| [`prompts/quickstart.zh.md`](prompts/quickstart.zh.md) | L1 权威对话块 |
 | [`skills/med-study-knead/`](skills/med-study-knead/) | L2 可加载技能包（标准 SKILL.md） |
 | [`docs/method.zh.md`](docs/method.zh.md) | 方法纪律（证据、勘误、范围切割） |
 | [`examples/`](examples/) | 合成示例 |
