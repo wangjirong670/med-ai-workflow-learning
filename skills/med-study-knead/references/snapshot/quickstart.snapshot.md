@@ -3,7 +3,7 @@
 source_id: quickstart
 source_relpath: prompts/quickstart.zh.md
 source_sha256: 00d9fcf4475540481c7b1c48a27e006cf10f12708b48af38553b64ed98c76996
-generated_at: 2026-10-12T14:01:51Z
+generated_at: 2026-10-20T06:58:34Z
 generator: skills/med-study-knead/scripts/sync_from_prompt.py
 -->
 > **快照说明**：本文件由脚本从 `prompts/quickstart.zh.md` 生成，供 Skill 在无法解析仓内权威路径时回退使用。
