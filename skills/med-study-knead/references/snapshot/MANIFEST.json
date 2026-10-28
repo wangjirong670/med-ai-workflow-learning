@@ -1,24 +1,28 @@
 {
-  "generated_at": "2026-10-20T07:57:46Z",
+  "generated_at": "2026-10-28T10:07:51Z",
   "generator": "skills/med-study-knead/scripts/sync_from_prompt.py",
-  "version_policy": "git history + source sha256; no custom version labels",
+  "version_policy": "git history + source sha256; hashes detect drift, not publisher identity",
   "sources": [
     {
       "id": "quickstart",
       "source_relpath": "prompts/quickstart.zh.md",
-      "source_sha256": "c9fbb687f4fe1190ecff31464b6b4951dea1fc527bf528943fdafd6acf8af272",
+      "source_sha256": "dbe848d27cec679c99a81e357d711bb5559245546c337fc625843d5b52d03e97",
       "snapshot_relpath": "references/snapshot/quickstart.snapshot.md",
-      "role": "权威 L1 学习向 prompt（红线/证据档位/输出/坏输出）",
-      "bytes": 11587
+      "bytes": 13936
     },
     {
       "id": "method",
       "source_relpath": "docs/method.zh.md",
-      "source_sha256": "ccffa34612eef285999ca9d13a720c81e3c483d8619bb1043a639f115dbfd4ae",
+      "source_sha256": "a0ce8446328fcad2c22c800cc9b080b4b25ee19d23de0ec37c91a8dc0ae8a5df",
       "snapshot_relpath": "references/snapshot/method.snapshot.md",
-      "role": "双轨纪律（循环/证据纪律/范围切割/勘误）",
-      "bytes": 3644
+      "bytes": 3810
+    },
+    {
+      "id": "long-material",
+      "source_relpath": "docs/long-material.zh.md",
+      "source_sha256": "4af2702f41507a0581f70e1d5fc2fec28bbe58697e15ffc61d3cf9e9f82c6db3",
+      "snapshot_relpath": "references/snapshot/long-material.snapshot.md",
+      "bytes": 2059
     }
-  ],
-  "note": "Snapshot is generated. Authority remains prompts/quickstart.zh.md. Re-run script after prompt edits."
+  ]
 }

@@ -45,12 +45,19 @@
 
 ## Install
 
-任意能加载 **`<skills目录>/<name>/SKILL.md`** 的 agent 都可用（不限定某一家产品）。
+采用 **`<skills目录>/<name>/SKILL.md`** 格式；发现路径与权限因宿主而异，不能据此推定所有 agent 已通过兼容性测试。
 
-| OS | 一条命令 |
-|----|----------|
-| **Windows** | `irm https://raw.githubusercontent.com/wangjirong670/med-ai-workflow-learning/v0.1.0/install.ps1 \| iex` |
-| **macOS / Linux** | `curl -fsSL https://raw.githubusercontent.com/wangjirong670/med-ai-workflow-learning/v0.1.0/install.sh \| bash` |
+先克隆仓库并阅读脚本，再安装到你的 agent 实际配置的技能目录：
+
+```bash
+git clone https://github.com/wangjirong670/med-ai-workflow-learning.git
+cd med-ai-workflow-learning
+```
+
+| OS | Command after review |
+|----|----|
+| Windows | `powershell -File .\install.ps1 -Target "<your-skills-dir>"` |
+| macOS / Linux | `bash ./install.sh "<your-skills-dir>"` |
 
 建议先阅读脚本再执行。Read the script before you run it.
 

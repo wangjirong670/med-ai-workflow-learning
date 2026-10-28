@@ -3,14 +3,14 @@
 把 [`../prompts/quickstart.zh.md`](../prompts/quickstart.zh.md) 的方法论打成可被 agent 加载的 skill 包。  
 **权威源仍是 prompt**；skill 只做薄封装，冲突时以 prompt 为准。
 
-## 一键安装
+## 从已审阅的仓库安装
 
-标准 **`<skills目录>/med-study-knead/SKILL.md`**，agent 通用。
+标准 **`<skills目录>/med-study-knead/SKILL.md`**；目录发现和权限由宿主决定。先克隆本仓库、进入目录并阅读脚本。安装器不再下载或执行远程脚本。
 
 ### Windows（PowerShell 5+ / 7+）
 
 ```powershell
-irm https://raw.githubusercontent.com/wangjirong670/med-ai-workflow-learning/v0.1.0/install.ps1 | iex
+powershell -File .\install.ps1 -Target "<your-skills-dir>"
 ```
 
 已 clone 本仓时：
@@ -23,7 +23,7 @@ irm https://raw.githubusercontent.com/wangjirong670/med-ai-workflow-learning/v0.
 ### macOS / Linux
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/wangjirong670/med-ai-workflow-learning/v0.1.0/install.sh | bash
+bash ./install.sh "<your-skills-dir>"
 ```
 
 已 clone 本仓时：
@@ -48,13 +48,17 @@ curl -fsSL https://raw.githubusercontent.com/wangjirong670/med-ai-workflow-learn
 - 触发示例：整理笔记 / 帮我揉一下 / 学习钉子 / 自测卡 / 我填了 X 对吗  
 - 红线摘要在 SKILL.md；E 表、坏输出表等外置到 `prompts/quickstart.zh.md` 对应节  
 - 权威源：`prompts/quickstart.zh.md` · `docs/method.zh.md`（版本以 git 为准）  
-- 冒烟样例（1 次，人工套规则，**非**自动加载验证）：[`../tests/results/skill-behavior-B-2026-10-12.md`](../tests/results/skill-behavior-B-2026-10-12.md)
+- 公开行为验证仅有历史冒烟摘要（**非**自动加载保证）：[`../docs/results.md`](../docs/results.md)；逐次私有记录不作为可点击公开证据。
 
 ## 安装说明（细节）
 
-- 依赖解析：开发模式优先仓内 prompt；不可达则用 `references/snapshot/`；两者皆无则停用并说明缺失。  
-- 诊断：`python skills/med-study-knead/scripts/check_resolve.py --self-test`  
-- 同步快照：`python skills/med-study-knead/scripts/sync_from_prompt.py`（改 prompt 后必跑）
+- 本地依赖：源文件匹配清单才用开发模式，否则仅回退到完整性通过的快照；都不可用则停止。无工具文本/MCP 模式必须披露未机器核验，不得绕过已知失败。  
+- 诊断：`python skills/med-study-knead/scripts/check_resolve.py --root .`  
+- 同步快照：`python skills/med-study-knead/scripts/sync_from_prompt.py`（改 prompt / method / 长材料协议后必跑；同时复制 LICENSE）
+
+默认只复制到 `~/.skills`（需自行配置 agent 发现路径）；`-Target` / Bash 位置参数可指定目录，`-All` / `ALL=1` 才显式安装到多处。新包先暂存，复制失败保留旧包，替换失败尝试恢复；同名目录中的本地定制在成功更新后会被替换，请先备份。PowerShell 可先加 `-PrintOnly` 预览。
+
+本地维护脚本需要 Python 3.10+。Agensi MCP 使用文本快照与文件索引，不执行这些依赖本地目录结构的脚本。独立包包含 MIT 版权与许可全文，见 `med-study-knead/LICENSE`。
 
 ## 约束
 

@@ -49,12 +49,19 @@
 
 ## 安装
 
-技能包是标准 **`SKILL.md` 目录**，任意支持该格式的 agent 可用。
+技能包采用标准 **`SKILL.md` 目录**；发现路径和权限取决于宿主，跨 agent 自动加载尚未全面验证。
 
-| 系统 | 一条命令 |
-|------|----------|
-| **Windows** | `irm https://raw.githubusercontent.com/wangjirong670/med-ai-workflow-learning/v0.1.0/install.ps1 \| iex` |
-| **macOS / Linux** | `curl -fsSL https://raw.githubusercontent.com/wangjirong670/med-ai-workflow-learning/v0.1.0/install.sh \| bash` |
+先克隆仓库并阅读脚本，再安装到你的 agent 实际配置的技能目录：
+
+```bash
+git clone https://github.com/wangjirong670/med-ai-workflow-learning.git
+cd med-ai-workflow-learning
+```
+
+| OS | Command after review |
+|----|----|
+| Windows | `powershell -File .\install.ps1 -Target "<your-skills-dir>"` |
+| macOS / Linux | `bash ./install.sh "<your-skills-dir>"` |
 
 建议先阅读脚本再执行。
 

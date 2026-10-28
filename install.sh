@@ -1,120 +1,81 @@
 #!/usr/bin/env bash
-# med-study-knead — generic SKILL.md installer
-# Any agent that loads <root>/<name>/SKILL.md.
-#
-# Local:  ./install.sh
-# Remote: curl -fsSL https://raw.githubusercontent.com/wangjirong670/med-ai-workflow-learning/v0.1.0/install.sh | bash
-# Custom: ./install.sh ~/.config/myagent/skills
-#         ALL=1 ./install.sh
+# Install from a reviewed checkout: bash ./install.sh <your-skills-dir>
+# Default: ~/.skills (portable copy; configure your agent to load it).
+# ALL=1 explicitly opts into the candidate directories below.
 set -euo pipefail
-
 SKILL_NAME="med-study-knead"
-REPO_URL="https://github.com/wangjirong670/med-ai-workflow-learning"
-ZIP_URL="$REPO_URL/archive/refs/tags/v0.1.0.zip"
 TARGET="${1:-}"
 ALL="${ALL:-0}"
-
-log() { echo "[install] $*"; }
-ok()  { echo "[install] OK  $*"; }
-skip(){ echo "[install] --  $*"; }
+log() { echo "[install] $*" >&2; }
 
 find_local_repo() {
   local dir
-  dir="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" 2>/dev/null && pwd || pwd)"
+  dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
   if [[ -f "$dir/skills/$SKILL_NAME/SKILL.md" ]]; then echo "$dir"; return; fi
-  dir="$(pwd)"
+  dir="$(pwd -P)"
   for _ in 1 2 3 4 5 6 7 8; do
     if [[ -f "$dir/skills/$SKILL_NAME/SKILL.md" ]]; then echo "$dir"; return; fi
     dir="$(dirname "$dir")"
   done
+  return 1
 }
 
 get_src() {
   local repo
-  repo="$(find_local_repo || true)"
-  if [[ -n "$repo" ]]; then
-    log "using local package $repo/skills/$SKILL_NAME"
-    echo "$repo/skills/$SKILL_NAME"
-    return
-  fi
-  log "no local package; downloading $ZIP_URL"
-  local tmp
-  tmp="$(mktemp -d)"
-  curl -fsSL "$ZIP_URL" -o "$tmp/src.zip"
-  unzip -q "$tmp/src.zip" -d "$tmp"
-  local found
-  found="$(find "$tmp" -type d -name "$SKILL_NAME" | head -1)"
-  if [[ -z "$found" || ! -f "$found/SKILL.md" ]]; then
-    echo "zip has no skills/$SKILL_NAME" >&2
-    exit 1
-  fi
-  echo "$found"
+  repo="$(find_local_repo)" || {
+    log "No checkout found. Clone the repository, review this script, then run bash ./install.sh <skills-dir>."
+    return 1
+  }
+  log "using local package $repo/skills/$SKILL_NAME"
+  echo "$repo/skills/$SKILL_NAME"
 }
 
 install_to() {
-  local root="$1" src="$2"
-  local dest="$root/$SKILL_NAME"
-  local src_abs dest_abs
-  src_abs="$(cd "$src" && pwd)"
-  if [[ -e "$dest" ]]; then
-    dest_abs="$(cd "$dest" && pwd)"
-    if [[ "$dest_abs" == "$src_abs" ]]; then
-      skip "skip (same as source): $dest"
-      return
-    fi
-  fi
-  if [[ "$(cd "$root" 2>/dev/null && pwd)" == "$(dirname "$src_abs")" ]]; then
-    skip "skip (source tree): $root"
-    return
-  fi
+  local root="$1" src="$2" dest stage backup=""
+  src="$(cd "$src" && pwd -P)"
   mkdir -p "$root"
-  rm -rf "$dest"
-  cp -R "$src" "$dest"
-  ok "installed -> $dest"
+  root="$(cd "$root" && pwd -P)"
+  dest="$root/$SKILL_NAME"
+  if [[ -L "$dest" ]]; then log "Refusing to replace symlink: $dest"; return 1; fi
+  if [[ -d "$dest" && "$(cd "$dest" && pwd -P)" == "$src" ]]; then
+    log "skip (same as source): $dest"; return
+  fi
+  if [[ "$root/" == "$src/"* || "$src/" == "$dest/"* ]]; then
+    log "Refusing overlapping source and destination: $dest"; return 1
+  fi
+  stage="$(mktemp -d "$root/.${SKILL_NAME}.stage.XXXXXX")"
+  if ! cp -R "$src/." "$stage/"; then
+    rm -rf -- "$stage"; log "Copy failed; existing installation unchanged"; return 1
+  fi
+  if [[ -e "$dest" ]]; then
+    backup="$(mktemp -d "$root/.${SKILL_NAME}.backup.XXXXXX")"
+    rmdir "$backup"
+    if ! mv -- "$dest" "$backup"; then rm -rf -- "$stage"; return 1; fi
+  fi
+  if ! mv -- "$stage" "$dest"; then
+    if [[ -n "$backup" ]]; then
+      mv -- "$backup" "$dest" || log "Restore failed; previous installation retained at $backup"
+    fi
+    rm -rf -- "$stage"; return 1
+  fi
+  if [[ -n "$backup" ]]; then rm -rf -- "$backup"; fi
+  log "installed -> $dest"
 }
 
 SRC="$(get_src)"
-log "skill source: $SRC"
-log "format: SKILL.md skill folder (agent-agnostic)"
-
+[[ -f "$SRC/LICENSE" && -f "$SRC/references/snapshot/MANIFEST.json" ]] || {
+  log "Incomplete package: LICENSE or snapshot manifest missing"; exit 1
+}
 targets=()
 if [[ -n "$TARGET" ]]; then
   targets+=("$TARGET")
+elif [[ "$ALL" == "1" ]]; then
+  targets+=("$HOME/.skills" "$HOME/.local/share/agent-skills" "$HOME/.config/agent-skills"
+    "$PWD/.mimocode/skills" "$PWD/.claude/skills" "$PWD/.cursor/skills" "$PWD/.agents/skills"
+    "$HOME/.config/mimocode/skills" "$HOME/.claude/skills" "$HOME/.cursor/skills"
+    "$HOME/.codex/skills" "$HOME/.gemini/skills" "$HOME/.agents/skills" "$HOME/.config/skills")
 else
-  H="${HOME}"
-  CWD="$(pwd)"
-  candidates=(
-    "$H/.skills"
-    "$H/.local/share/agent-skills"
-    "$H/.config/agent-skills"
-    "$CWD/.mimocode/skills"
-    "$CWD/.claude/skills"
-    "$CWD/.cursor/skills"
-    "$CWD/.agents/skills"
-    "$H/.config/mimocode/skills"
-    "$H/.claude/skills"
-    "$H/.cursor/skills"
-    "$H/.codex/skills"
-    "$H/.gemini/skills"
-    "$H/.agents/skills"
-    "$H/.config/skills"
-  )
-  for r in "${candidates[@]}"; do
-    if [[ "$r" == "$H/.skills" || "$r" == *agent-skills* || -d "$r" || "$ALL" == "1" ]]; then
-      targets+=("$r")
-    else
-      skip "skip (absent, use TARGET or ALL=1): $r"
-    fi
-  done
+  targets+=("$HOME/.skills")
 fi
-
-for t in "${targets[@]}"; do
-  [[ -n "$t" ]] || continue
-  install_to "$t" "$SRC"
-done
-
-echo
-ok "done. Package is standard: <dir>/$SKILL_NAME/SKILL.md"
-echo "Point any SKILL.md-capable agent at one of those folders (or symlink it)."
-echo "New session, then e.g.:  帮我揉一下这页药理课业笔记"
-echo "Docs: $REPO_URL/blob/v0.1.0/skills/README.md"
+for target in "${targets[@]}"; do install_to "$target" "$SRC"; done
+log "Done. Configure your agent to load <target>/$SKILL_NAME/SKILL.md; discovery depends on the agent."

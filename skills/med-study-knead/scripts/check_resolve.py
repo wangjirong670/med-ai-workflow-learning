@@ -1,137 +1,108 @@
 #!/usr/bin/env python3
-"""Diagnose skill dependency-resolution mode (dev / release / missing).
+"""Check local dependency integrity (Python 3.10+).
 
-Modes:
-  dev     — authoritative prompt files are resolvable
-  release — prompt absent, but references/snapshot/ present
-  missing — neither prompt nor snapshot (caller must stop and explain)
-
-Usage:
-  python check_resolve.py [--root <dir>] [--skill-dir <dir>]
-  python check_resolve.py --self-test
-
-Exit codes: 0 ok (mode printed), 1 missing mode, 2 usage/error.
+dev: source files match the manifest; release: intact snapshots are used instead.
+missing: neither verified source nor intact snapshot is available. Exit 1.
+Hashes detect drift/corruption; they do not authenticate the publisher.
 """
-
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
-import sys
+import re
 from pathlib import Path
 
-PROMPT_REL = Path("prompts/quickstart.zh.md")
-METHOD_REL = Path("docs/method.zh.md")
-SNAP_Q = Path("references/snapshot/quickstart.snapshot.md")
-SNAP_M = Path("references/snapshot/method.snapshot.md")
-MANIFEST = Path("references/snapshot/MANIFEST.json")
+SOURCES = {
+    "quickstart": ("prompts/quickstart.zh.md", "references/snapshot/quickstart.snapshot.md"),
+    "method": ("docs/method.zh.md", "references/snapshot/method.snapshot.md"),
+    "long-material": ("docs/long-material.zh.md", "references/snapshot/long-material.snapshot.md"),
+}
+MANIFEST = "references/snapshot/MANIFEST.json"
 
-REQUIRED_SKILL_MARKERS = (
-    "权威源与依赖解析",
-    "references/snapshot/",
-    "禁止",
-    "缺",
-)
+
+def normalized_bytes(path: Path) -> bytes:
+    return path.read_bytes().replace(b"\r\n", b"\n")
+
+
+def digest(raw: bytes) -> str:
+    return hashlib.sha256(raw).hexdigest()
+
+
+def load_entries(skill_dir: Path) -> dict:
+    manifest = json.loads((skill_dir / MANIFEST).read_text(encoding="utf-8"))
+    entries = manifest["sources"]
+    if not isinstance(entries, list) or len(entries) != len(SOURCES):
+        raise ValueError("manifest must contain exactly the expected sources")
+    result = {}
+    for entry in entries:
+        source_id = entry["id"]
+        if source_id not in SOURCES or source_id in result:
+            raise ValueError("unknown or duplicate source id")
+        source_path, snapshot_path = SOURCES[source_id]
+        if (entry["source_relpath"], entry["snapshot_relpath"]) != (source_path, snapshot_path):
+            raise ValueError("unexpected manifest path")
+        if not isinstance(entry["source_sha256"], str) or not re.fullmatch(r"[0-9a-f]{64}", entry["source_sha256"]):
+            raise ValueError("invalid source hash")
+        if type(entry["bytes"]) is not int or entry["bytes"] < 0:
+            raise ValueError("invalid source byte count")
+        result[source_id] = entry
+    return result
+
+
+def snapshot_matches(skill_dir: Path, source_id: str, entry: dict) -> bool:
+    raw = normalized_bytes(skill_dir / entry["snapshot_relpath"])
+    header, separator, body = raw.partition(b"\n\n")
+    if not separator or not header.startswith(b"<!-- GENERATED FILE"):
+        return False
+    text = header.decode("utf-8")
+    markers = {
+        "source_id": source_id,
+        "source_relpath": entry["source_relpath"],
+        "source_sha256": entry["source_sha256"],
+    }
+    return (all(re.findall(rf"^{key}: (.*)$", text, re.M) == [value]
+                for key, value in markers.items())
+            and digest(body) == entry["source_sha256"]
+            and len(body) == entry["bytes"])
 
 
 def resolve_mode(root: Path, skill_dir: Path) -> tuple[str, dict]:
-    prompt_ok = (root / PROMPT_REL).is_file() and (root / METHOD_REL).is_file()
-    snap_ok = (skill_dir / SNAP_Q).is_file() and (skill_dir / SNAP_M).is_file()
-    if prompt_ok:
-        mode = "dev"
-    elif snap_ok:
-        mode = "release"
-    else:
-        mode = "missing"
-    detail = {
-        "mode": mode,
-        "prompt_ok": prompt_ok,
-        "snapshot_ok": snap_ok,
-        "prompt_path": str(root / PROMPT_REL) if prompt_ok else None,
-        "snapshot_dir": str(skill_dir / "references/snapshot") if snap_ok else None,
-    }
+    detail = {"mode": "missing", "source_ok": False, "snapshot_ok": False, "errors": []}
+    try:
+        entries = load_entries(skill_dir)
+    except (OSError, ValueError, KeyError, TypeError) as exc:
+        detail["errors"].append(f"manifest: {exc}")
+        return "missing", detail
+    source_ok = snapshot_ok = True
+    for source_id, entry in entries.items():
+        try:
+            raw = normalized_bytes(root / entry["source_relpath"])
+            if digest(raw) != entry["source_sha256"] or len(raw) != entry["bytes"]:
+                raise ValueError("source differs from manifest")
+        except (OSError, ValueError) as exc:
+            source_ok = False
+            detail["errors"].append(f"{source_id} source: {exc}")
+        try:
+            if not snapshot_matches(skill_dir, source_id, entry):
+                raise ValueError("snapshot body/header differs from manifest")
+        except (OSError, ValueError) as exc:
+            snapshot_ok = False
+            detail["errors"].append(f"{source_id} snapshot: {exc}")
+    mode = "dev" if source_ok else "release" if snapshot_ok else "missing"
+    detail.update(mode=mode, source_ok=source_ok, snapshot_ok=snapshot_ok)
     return mode, detail
 
 
-def skill_has_missing_rule(skill_dir: Path) -> bool:
-    text = (skill_dir / "SKILL.md").read_text(encoding="utf-8")
-    return all(m in text for m in REQUIRED_SKILL_MARKERS)
-
-
-def self_test(skill_dir: Path) -> int:
-    import shutil
-    import tempfile
-
-    failures = []
-    with tempfile.TemporaryDirectory() as td:
-        tdp = Path(td)
-
-        # 1) dev: fake root with prompt files
-        r1 = tdp / "dev_root"
-        (r1 / "prompts").mkdir(parents=True)
-        (r1 / "docs").mkdir(parents=True)
-        (r1 / "prompts" / "quickstart.zh.md").write_text("# q\n", encoding="utf-8")
-        (r1 / "docs" / "method.zh.md").write_text("# m\n", encoding="utf-8")
-        mode, _ = resolve_mode(r1, skill_dir)
-        if mode != "dev":
-            failures.append(f"expected dev, got {mode}")
-
-        # 2) release: empty root, skill has snapshot
-        mode, d = resolve_mode(tdp / "empty", skill_dir)
-        if mode != "release":
-            failures.append(f"expected release, got {mode} {d}")
-        elif not d["snapshot_ok"]:
-            failures.append("release but snapshot_ok False")
-
-        # 3) missing: skill copy without snapshot, no prompt
-        bare = tdp / "bare_skill"
-        bare.mkdir()
-        (bare / "SKILL.md").write_text(
-            (skill_dir / "SKILL.md").read_text(encoding="utf-8"), encoding="utf-8"
-        )
-        mode, _ = resolve_mode(tdp / "empty2", bare)
-        if mode != "missing":
-            failures.append(f"expected missing, got {mode}")
-
-        # 4) SKILL.md instructs stop-and-explain on missing
-        if not skill_has_missing_rule(skill_dir):
-            failures.append("SKILL.md missing stop-and-explain markers")
-
-        # 5) missing mode must NOT look like dev/release
-        if mode != "missing":
-            failures.append("mode leak")
-
-    if failures:
-        print("SELF-TEST FAIL")
-        for f in failures:
-            print(" -", f)
-        return 1
-    print("SELF-TEST PASS  modes=dev/release/missing  skill_missing_rule=yes")
-    return 0
-
-
 def main() -> int:
-    ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--root", help="directory that may contain prompts/")
-    ap.add_argument("--skill-dir", help="skill folder (contains SKILL.md)")
-    ap.add_argument("--self-test", action="store_true")
-    args = ap.parse_args()
-
-    here = Path(__file__).resolve().parents[1]
-    skill_dir = Path(args.skill_dir).resolve() if args.skill_dir else here
-
-    if args.self_test:
-        return self_test(skill_dir)
-
-    if not args.root:
-        print("need --root or --self-test", file=sys.stderr)
-        return 2
-    root = Path(args.root).resolve()
-    mode, detail = resolve_mode(root, skill_dir)
-    detail["skill_missing_rule"] = skill_has_missing_rule(skill_dir)
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--root", type=Path, required=True, help="candidate repository root")
+    parser.add_argument("--skill-dir", type=Path, default=Path(__file__).resolve().parents[1])
+    args = parser.parse_args()
+    mode, detail = resolve_mode(args.root.resolve(), args.skill_dir.resolve())
     print(json.dumps(detail, ensure_ascii=False, indent=2))
-    return 0 if mode != "missing" else 1
+    return int(mode == "missing")
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    raise SystemExit(main())
