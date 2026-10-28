@@ -108,10 +108,14 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, required=True, help="candidate repository root")
     parser.add_argument("--skill-dir", type=Path, default=Path(__file__).resolve().parents[1])
+    parser.add_argument("--require-release", action="store_true", help="require a complete standalone runtime package")
     args = parser.parse_args()
     mode, detail = resolve_mode(args.root.resolve(), args.skill_dir.resolve())
+    if args.require_release:
+        required = ("SKILL.md", "LICENSE", "scripts/check_resolve.py")
+        detail["runtime_files_ok"] = all((args.skill_dir / name).is_file() and (args.skill_dir / name).stat().st_size > 0 for name in required)
     print(json.dumps(detail, ensure_ascii=False, indent=2))
-    return int(mode == "missing")
+    return int(not (detail["snapshot_ok"] and detail["runtime_files_ok"]) if args.require_release else mode == "missing")
 
 
 if __name__ == "__main__":

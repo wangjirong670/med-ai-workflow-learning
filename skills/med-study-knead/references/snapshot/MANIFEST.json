@@ -1,21 +1,21 @@
 {
-  "generated_at": "2026-10-28T10:07:51Z",
+  "generated_at": "2026-10-28T12:38:26Z",
   "generator": "skills/med-study-knead/scripts/sync_from_prompt.py",
   "version_policy": "git history + source sha256; hashes detect drift, not publisher identity",
   "sources": [
     {
       "id": "quickstart",
       "source_relpath": "prompts/quickstart.zh.md",
-      "source_sha256": "dbe848d27cec679c99a81e357d711bb5559245546c337fc625843d5b52d03e97",
+      "source_sha256": "6301ba41f3faaa3405e5f2fa8972e05bfb972576ac586f9f7782a13cbadc4eae",
       "snapshot_relpath": "references/snapshot/quickstart.snapshot.md",
-      "bytes": 13936
+      "bytes": 16602
     },
     {
       "id": "method",
       "source_relpath": "docs/method.zh.md",
-      "source_sha256": "a0ce8446328fcad2c22c800cc9b080b4b25ee19d23de0ec37c91a8dc0ae8a5df",
+      "source_sha256": "f6fff14adee2367052a655d6ca318b71749836086ce4612f20e8a8df679d7adb",
       "snapshot_relpath": "references/snapshot/method.snapshot.md",
-      "bytes": 3810
+      "bytes": 4842
     },
     {
       "id": "long-material",

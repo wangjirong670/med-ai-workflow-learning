@@ -70,6 +70,10 @@ function Get-CandidateRoots {
 }
 function Install-To([string]$destinationRoot, [string]$sourceDirectory) {
     $sourceFull = (Resolve-Path -LiteralPath $sourceDirectory).Path.TrimEnd('\', '/')
+    $provider = $null
+    $drive = $null
+    $destinationRoot = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($destinationRoot, [ref]$provider, [ref]$drive)
+    if ($provider.Name -ne 'FileSystem') { throw 'Target must use the FileSystem provider' }
     # Resolve-Path does not resolve junction targets in Windows PowerShell 5.
     # Check both sides so a linked source cannot alias an existing installation.
     foreach ($candidate in @($sourceFull, [IO.Path]::GetFullPath($destinationRoot))) {
@@ -108,6 +112,12 @@ function Install-To([string]$destinationRoot, [string]$sourceDirectory) {
         Get-ChildItem -LiteralPath $sourceFull -Force | ForEach-Object {
             Copy-Item -LiteralPath $_.FullName -Destination $stage -Recurse -Force
         }
+        $python = Get-Command python -ErrorAction SilentlyContinue
+        if (-not $python) { $python = Get-Command python3 -ErrorAction Stop }
+        & $python.Source -c 'import sys; sys.exit(0 if sys.version_info >= (3,10) else 1)'
+        if ($LASTEXITCODE -ne 0) { throw 'Installation requires Python 3.10+' }
+        & $python.Source (Join-Path $sourceFull 'scripts/check_resolve.py') --root $stage --skill-dir $stage --require-release | Out-Null
+        if ($LASTEXITCODE -ne 0) { throw 'Staged package failed standalone integrity verification; previous installation unchanged' }
         if (Test-Path -LiteralPath $destination) {
             Move-Item -LiteralPath $destination -Destination $backup
             $movedPrevious = $true

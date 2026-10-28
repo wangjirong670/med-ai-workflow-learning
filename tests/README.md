@@ -22,6 +22,6 @@ python skills/med-study-knead/scripts/sync_from_prompt.py --check
 
 修改规则后运行 `python scripts/sync_share_packs.py`，再运行 `python skills/med-study-knead/scripts/sync_from_prompt.py` 更新生成物。`--check` 不创建或更新包文件。
 
-行为定义在中英 Markdown 与 `cases.yaml` 中共 35 个 ID。工程测试只校验 ID 覆盖，不声称自动证明自然语言语义一致。D6 初轮未出现错误时，勘误分支记未覆盖；历史 W 保留，不重写历史数据。
+行为定义在中英 Markdown 与 `cases.yaml` 中共 38 个 ID。工程测试只校验 ID 覆盖，不声称自动证明自然语言语义一致。D6 初轮未出现错误时，勘误分支记未覆盖；历史 W 保留，不重写历史数据。
 
 新版协议仍需在干净会话中分别测试完整 prompt、Lite、独立 Skill 与 MCP 交付，并与无 Skill 基线比较。不得把旧冒烟记录或本页工程测试表述为新版模型通过率。

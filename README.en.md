@@ -16,6 +16,8 @@ A fictional messy note about a made-up herb「雾岭草」becomes a pin list wit
 
 ## Install
 
+Installation requires Python 3.10+ (`python` / `python3`) to verify the staged standalone package before replacing an existing installation.
+
 Standard **`SKILL.md` skill folder**. Discovery paths and permissions depend on the host; cross-agent loading is not comprehensively tested.
 
 Clone the repository, inspect the scripts, then install into your agent’s configured skills directory:

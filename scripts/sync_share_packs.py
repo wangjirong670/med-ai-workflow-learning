@@ -11,12 +11,21 @@ def blocks(root: Path):
         source = root / "prompts" / ("quickstart.zh.md" if suffix == "full" else "quickstart-lite.zh.md")
         text = source.read_text(encoding="utf-8")
         if suffix == "full":
-            body = text.split("## 【对话块】从这里复制\n\n", 1)[1].split("\n---\n", 1)[0].rstrip()
+            start = "## 【对话块】从这里复制\n\n"
+            end = "\n## 【结束对话块】"
+            if text.count(start) != 1 or text.count(end) != 1:
+                raise ValueError("Full dialogue requires unique start/end markers")
+            body, boundary = text.split(start, 1)[1].split(end, 1)
+            if not body.endswith("\n---\n"):
+                raise ValueError("Full dialogue end separator missing")
+            body = body[:-len("\n---\n")].rstrip()
         else:
             body = "你是" + text.split("你是", 1)[1].rstrip()
         share = root / "prompts" / f"share-pack-{suffix}.zh.md"
         shell = share.read_text(encoding="utf-8")
         heading = "## 【对话块】从这里复制到「从这里结束」\n\n"
+        if shell.count(heading) != 1 or shell.count("【从这里结束】") != 1:
+            raise ValueError("Share pack requires unique start/end markers")
         prefix, rest = shell.split(heading, 1)
         _, tail = rest.split("【从这里结束】", 1)
         # Full pack has a rule separator; Lite has none.

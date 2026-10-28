@@ -47,6 +47,15 @@ install_to() {
   if ! cp -R "$src/." "$stage/"; then
     rm -rf -- "$stage"; log "Copy failed; existing installation unchanged"; return 1
   fi
+  local python="" candidate
+  for candidate in python3 python; do
+    if command -v "$candidate" >/dev/null && "$candidate" -c 'import sys; sys.exit(0 if sys.version_info >= (3,10) else 1)' 2>/dev/null; then
+      python="$candidate"; break
+    fi
+  done
+  if [[ -z "$python" ]] || ! "$python" "$src/scripts/check_resolve.py" --root "$stage" --skill-dir "$stage" --require-release >/dev/null; then
+    rm -rf -- "$stage"; log "Staged package failed standalone integrity verification; previous installation unchanged"; return 1
+  fi
   if [[ -e "$dest" ]]; then
     backup="$(mktemp -d "$root/.${SKILL_NAME}.backup.XXXXXX")"
     rmdir "$backup"

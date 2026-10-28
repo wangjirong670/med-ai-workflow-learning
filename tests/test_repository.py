@@ -162,6 +162,55 @@ class RepositoryTests(unittest.TestCase):
                                 capture_output=True, text=True)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
+    def test_share_pack_preserves_internal_separator(self):
+        spec = importlib.util.spec_from_file_location("share_sync", ROOT / "scripts/sync_share_packs.py")
+        sync = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(sync)
+        shutil.copytree(ROOT / "prompts", self.root / "prompts", dirs_exist_ok=True)
+        source = self.root / "prompts/quickstart.zh.md"
+        text = source.read_text(encoding="utf-8")
+        source.write_text(text.replace("### 学习向红线", "---\n\n### 学习向红线", 1), encoding="utf-8")
+        output = list(sync.blocks(self.root))[0][2]
+        self.assertIn("### 学习向红线", output)
+        self.assertIn("### 收尾", output)
+        source.write_text(text.replace("## 【结束对话块】", "## removed"), encoding="utf-8")
+        with self.assertRaises(ValueError):
+            list(sync.blocks(self.root))
+
+    @unittest.skipUnless(POWERSHELL, "PowerShell unavailable")
+    def test_powershell_rejects_corrupt_update(self):
+        target = self.root / "installed"
+        command = [POWERSHELL, "-NoProfile", "-File", str(self.root / "install.ps1"), "-Source", str(self.skill), "-Target", str(target)]
+        self.assertEqual(subprocess.run(command, capture_output=True).returncode, 0)
+        installed = target / "med-study-knead"
+        before = {p.relative_to(installed): p.read_bytes() for p in installed.rglob("*") if p.is_file()}
+        (self.skill / resolver.SOURCES["quickstart"][1]).unlink()
+        self.assertNotEqual(subprocess.run(command, capture_output=True).returncode, 0)
+        after = {p.relative_to(installed): p.read_bytes() for p in installed.rglob("*") if p.is_file()}
+        self.assertEqual(before, after)
+        self.assertEqual(list(target.glob(".*.stage.*")), [])
+
+    @unittest.skipUnless(POWERSHELL and os.name == "nt", "Windows junction support required")
+    def test_powershell_relative_target_uses_session_location(self):
+        location = self.root / "session"
+        location.mkdir()
+        actual = self.root / "actual"
+        actual.mkdir()
+        junction = location / "junction"
+        quote = lambda p: "'" + str(p).replace("'", "''") + "'"
+        wrapper = self.root / "relative.ps1"
+        setup = "Set-Location " + quote(location) + "\n& " + quote(self.root / "install.ps1") + " -Source " + quote(self.skill)
+        wrapper.write_text(setup + " -Target 'normal'", encoding="utf-8")
+        self.assertEqual(subprocess.run([POWERSHELL, "-NoProfile", "-File", str(wrapper)], cwd=self.root, capture_output=True).returncode, 0)
+        self.assertTrue((location / "normal/med-study-knead/SKILL.md").is_file())
+        create = "New-Item -ItemType Junction -Path " + quote(junction) + " -Target " + quote(actual) + " | Out-Null\n"
+        wrapper.write_text(create + setup + " -Target 'junction/child'", encoding="utf-8")
+        try:
+            self.assertNotEqual(subprocess.run([POWERSHELL, "-NoProfile", "-File", str(wrapper)], cwd=self.root, capture_output=True).returncode, 0)
+            self.assertFalse((actual / "child").exists())
+        finally:
+            if junction.exists(): os.rmdir(junction)
+
     def install_bash(self, destination, env=None):
         return subprocess.run([BASH, str(self.root / "install.sh"), str(destination)], cwd=self.root,
                               env=env, capture_output=True, text=True)
