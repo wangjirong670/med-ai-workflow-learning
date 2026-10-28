@@ -1,14 +1,14 @@
 {
-  "generated_at": "2026-10-28T12:38:26Z",
+  "generated_at": "2026-10-28T13:06:30Z",
   "generator": "skills/med-study-knead/scripts/sync_from_prompt.py",
   "version_policy": "git history + source sha256; hashes detect drift, not publisher identity",
   "sources": [
     {
       "id": "quickstart",
       "source_relpath": "prompts/quickstart.zh.md",
-      "source_sha256": "6301ba41f3faaa3405e5f2fa8972e05bfb972576ac586f9f7782a13cbadc4eae",
+      "source_sha256": "8de022292b11be2c739020b5e5a4ab63ecc6b3b0f53df90236715faf2dc68315",
       "snapshot_relpath": "references/snapshot/quickstart.snapshot.md",
-      "bytes": 16602
+      "bytes": 16623
     },
     {
       "id": "method",

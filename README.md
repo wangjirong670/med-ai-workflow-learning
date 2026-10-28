@@ -45,7 +45,9 @@
 
 ## Install
 
-安装需要 Python 3.10+（`python` / `python3`）：切换前验证暂存包的独立运行完整性，失败保留旧包。
+先安装校验依赖：`python -m pip install -r skills/med-study-knead/scripts/requirements.txt`（完整仓库）；独立包使用 `<skill>/scripts/requirements.txt`。
+
+安装需要 Python 3.10+ 和 PyYAML（`python` / `python3`）：切换前验证暂存包的独立运行完整性，失败保留旧包。
 
 采用 **`<skills目录>/<name>/SKILL.md`** 格式；发现路径与权限因宿主而异，不能据此推定所有 agent 已通过兼容性测试。
 

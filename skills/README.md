@@ -5,6 +5,8 @@
 
 ## 从已审阅的仓库安装
 
+先安装校验依赖：`python -m pip install -r skills/med-study-knead/scripts/requirements.txt`（完整仓库）；独立包使用 `<skill>/scripts/requirements.txt`。
+
 标准 **`<skills目录>/med-study-knead/SKILL.md`**；目录发现和权限由宿主决定。先克隆本仓库、进入目录并阅读脚本。安装器不再下载或执行远程脚本。
 
 ### Windows（PowerShell 5+ / 7+）

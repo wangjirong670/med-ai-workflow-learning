@@ -16,7 +16,9 @@ A fictional messy note about a made-up herb「雾岭草」becomes a pin list wit
 
 ## Install
 
-Installation requires Python 3.10+ (`python` / `python3`) to verify the staged standalone package before replacing an existing installation.
+Install validation dependencies first: `python -m pip install -r skills/med-study-knead/scripts/requirements.txt` in a checkout, or `<skill>/scripts/requirements.txt` for a standalone package.
+
+Installation requires Python 3.10+ and PyYAML (`python` / `python3`) to verify the staged standalone package before replacing an existing installation.
 
 Standard **`SKILL.md` skill folder**. Discovery paths and permissions depend on the host; cross-agent loading is not comprehensively tested.
 

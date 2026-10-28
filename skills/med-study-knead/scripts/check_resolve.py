@@ -42,6 +42,37 @@ def digest(raw: bytes) -> str:
     return hashlib.sha256(raw).hexdigest()
 
 
+def validate_skill_metadata(skill_dir: Path) -> None:
+    """Validate the YAML contract before replacing a working installation."""
+    try:
+        import yaml
+    except ImportError as exc:
+        raise ValueError("PyYAML required: python -m pip install -r <skill>/scripts/requirements.txt") from exc
+
+    class UniqueLoader(yaml.SafeLoader):
+        def construct_mapping(self, node, deep=False):
+            keys = [self.construct_object(key, deep=deep) for key, _ in node.value]
+            if len(set(keys)) != len(keys):
+                raise ValueError("duplicate YAML fields")
+            return super().construct_mapping(node, deep=deep)
+
+    text = (skill_dir / "SKILL.md").read_text(encoding="utf-8-sig")
+    match = re.fullmatch(r"---\n(.*?)\n---\n(.*)", text, re.S)
+    if not match or not match[2].strip():
+        raise ValueError("SKILL.md requires YAML frontmatter and a nonempty body")
+    try:
+        metadata = yaml.load(match[1], Loader=UniqueLoader)
+    except (yaml.YAMLError, TypeError) as exc:
+        raise ValueError(f"invalid SKILL.md YAML: {exc}") from exc
+    if not isinstance(metadata, dict):
+        raise ValueError("SKILL.md frontmatter must be a mapping")
+    if metadata.get("name") != "med-study-knead":
+        raise ValueError("SKILL.md name must be med-study-knead")
+    description = metadata.get("description")
+    if not isinstance(description, str) or not description.strip() or len(description) > 1024:
+        raise ValueError("SKILL.md description must be a nonempty string of at most 1024 characters")
+
+
 def load_entries(skill_dir: Path) -> tuple[dict, dict]:
     manifest = json.loads((skill_dir / MANIFEST).read_text(encoding="utf-8"))
     timestamp = manifest["generated_at"]
@@ -114,8 +145,14 @@ def main() -> int:
     if args.require_release:
         required = ("SKILL.md", "LICENSE", "scripts/check_resolve.py")
         detail["runtime_files_ok"] = all((args.skill_dir / name).is_file() and (args.skill_dir / name).stat().st_size > 0 for name in required)
+        try:
+            validate_skill_metadata(args.skill_dir)
+            detail["metadata_ok"] = True
+        except (OSError, ValueError, TypeError) as exc:
+            detail["metadata_ok"] = False
+            detail["errors"].append(f"skill metadata: {exc}")
     print(json.dumps(detail, ensure_ascii=False, indent=2))
-    return int(not (detail["snapshot_ok"] and detail["runtime_files_ok"]) if args.require_release else mode == "missing")
+    return int(not (detail["snapshot_ok"] and detail["runtime_files_ok"] and detail["metadata_ok"]) if args.require_release else mode == "missing")
 
 
 if __name__ == "__main__":
