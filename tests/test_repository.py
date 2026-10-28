@@ -54,6 +54,58 @@ class RepositoryTests(unittest.TestCase):
     def test_release_works_without_repository(self):
         self.assertEqual(resolver.resolve_mode(self.empty, self.skill)[0], "release")
 
+    def test_release_metadata_validation(self):
+        path = self.skill / "SKILL.md"
+        original = path.read_bytes()
+        resolver.validate_skill_metadata(self.skill)
+        bad = ["no frontmatter", "---\nname: med-study-knead\n", "---\n[]\n---\nbody",
+               "---\nname: [invalid\n---\nbody", "---\nname: another-skill\ndescription: text\n---\nbody",
+               "---\nname: med-study-knead\n---\nbody",
+               "---\ndescription: text\n---\nbody"]
+        for value in ('null', 'false', '42', '[]', '{}', "''", "'  '"):
+            bad.append("---\nname: med-study-knead\ndescription: " + value + "\n---\nbody")
+        bad.extend(["---\nname: med-study-knead\nname: med-study-knead\ndescription: text\n---\nbody",
+                    "---\nname: med-study-knead\ndescription: text\n---\n"])
+        for content in bad:
+            with self.subTest(content=content):
+                path.write_text(content, encoding="utf-8")
+                result = subprocess.run([sys.executable, str(self.skill / 'scripts/check_resolve.py'),
+                                         '--root', str(self.empty), '--skill-dir', str(self.skill), '--require-release'], capture_output=True, text=True)
+                self.assertEqual(result.returncode, 1)
+                self.assertFalse(json.loads(result.stdout)['metadata_ok'])
+        path.write_bytes(original.replace(b'\n', b'\r\n'))
+        resolver.validate_skill_metadata(self.skill)
+
+    def test_release_requires_yaml_dependency(self):
+        result = subprocess.run([sys.executable, '-S', str(self.skill / 'scripts/check_resolve.py'),
+                                 '--root', str(self.empty), '--require-release'], capture_output=True, text=True)
+        self.assertEqual(result.returncode, 1)
+        detail = json.loads(result.stdout)
+        self.assertFalse(detail['metadata_ok'])
+        self.assertIn('PyYAML required', '\n'.join(detail['errors']))
+
+    def assert_invalid_skill_update_preserves_install(self, command, target):
+        self.assertEqual(subprocess.run(command, capture_output=True).returncode, 0)
+        installed = target / 'med-study-knead'
+        before = {p.relative_to(installed): p.read_bytes() for p in installed.rglob('*') if p.is_file()}
+        (self.skill / 'SKILL.md').write_text('broken skill without YAML', encoding='utf-8')
+        self.assertNotEqual(subprocess.run(command, capture_output=True).returncode, 0)
+        after = {p.relative_to(installed): p.read_bytes() for p in installed.rglob('*') if p.is_file()}
+        self.assertEqual(before, after)
+        self.assertEqual(list(target.glob('.*.stage.*')), [])
+        self.assertEqual(list(target.glob('.*.backup.*')), [])
+
+    @unittest.skipUnless(POWERSHELL, 'PowerShell unavailable')
+    def test_powershell_invalid_skill_update_preserves_install(self):
+        target = self.root / 'metadata target'
+        self.assert_invalid_skill_update_preserves_install(
+            [POWERSHELL, '-NoProfile', '-File', str(self.root / 'install.ps1'), '-Source', str(self.skill), '-Target', str(target)], target)
+
+    @unittest.skipUnless(BASH and os.name != 'nt', 'POSIX bash required')
+    def test_bash_invalid_skill_update_preserves_install(self):
+        target = self.root / 'metadata target'
+        self.assert_invalid_skill_update_preserves_install([BASH, str(self.root / 'install.sh'), str(target)], target)
+
     def test_missing_manifest_fails_closed(self):
         self.manifest().unlink()
         self.assertEqual(resolver.resolve_mode(self.root, self.skill)[0], "missing")

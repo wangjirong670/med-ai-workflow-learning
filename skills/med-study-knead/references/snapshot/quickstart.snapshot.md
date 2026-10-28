@@ -2,8 +2,8 @@
 <!--
 source_id: quickstart
 source_relpath: prompts/quickstart.zh.md
-source_sha256: 6301ba41f3faaa3405e5f2fa8972e05bfb972576ac586f9f7782a13cbadc4eae
-generated_at: 2026-10-28T12:38:26Z
+source_sha256: 8de022292b11be2c739020b5e5a4ab63ecc6b3b0f53df90236715faf2dc68315
+generated_at: 2026-10-28T13:06:30Z
 generator: skills/med-study-knead/scripts/sync_from_prompt.py
 -->
 > **快照说明**：来自 `prompts/quickstart.zh.md`，供独立 Skill / MCP 加载；不是仓内实时源文件。
@@ -225,7 +225,7 @@ BNP 升高就等于心衰吗？老师好像说了不是一定。
 |--------|------|
 | 写可直接交的作业答案/填格 | 骨架+核对路径；交作业时更严 |
 | 空白题库逐空作答（哪怕「请作答」） | 拒填；先填后批 |
-| 占位符/乱填仍回写整表答案 | 按空白；只给对错+分叉点+页码 |
+| 占位符/乱填仍回写整表答案 | 按空白；未作答+判别方向+核对路径，不判对错 |
 | 半填当已填 | 判不准按空白 |
 | 教材病例题被当真实病人拦 | 有经手信号才拦；拿不准先问 |
 | 真实病人整理 / 脱敏后给处置 | 停；上级/院内；概念层only |

@@ -10,7 +10,9 @@
 
 ## 工程回归（不等于模型行为通过）
 
-完整仓库需要 Python 3.10+，以下检查不需要模型 API：
+先安装校验依赖：`python -m pip install -r skills/med-study-knead/scripts/requirements.txt`（完整仓库）；独立包使用 `<skill>/scripts/requirements.txt`。
+
+完整仓库需要 Python 3.10+ 和 PyYAML，以下检查不需要模型 API：
 
 ```bash
 python -m unittest discover -s tests -p "test_*.py" -v
