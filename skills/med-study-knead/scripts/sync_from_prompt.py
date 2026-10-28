@@ -16,21 +16,7 @@ from pathlib import Path
 
 # --check must not create even an import cache in a read-only package.
 sys.dont_write_bytecode = True
-from check_resolve import SOURCES, digest, normalized_bytes, resolve_mode
-
-HEADER = """<!-- GENERATED FILE — do not hand-edit. -->
-<!--
-source_id: {source_id}
-source_relpath: {source_path}
-source_sha256: {sha256}
-generated_at: {generated_at}
-generator: skills/med-study-knead/scripts/sync_from_prompt.py
--->
-> **快照说明**：来自 `{source_path}`，供独立 Skill / MCP 加载；不是仓内实时源文件。
-> 维护者在完整仓库中运行 `scripts/sync_from_prompt.py` 更新；使用者不需要运行同步脚本。
-
-"""
-
+from check_resolve import HEADER, SOURCES, digest, normalized_bytes, resolve_mode
 
 def atomic_write(path: Path, raw: bytes) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)

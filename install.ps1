@@ -70,18 +70,20 @@ function Get-CandidateRoots {
 }
 function Install-To([string]$destinationRoot, [string]$sourceDirectory) {
     $sourceFull = (Resolve-Path -LiteralPath $sourceDirectory).Path.TrimEnd('\', '/')
-    # Refuse linked ancestors: Windows PowerShell 5 Resolve-Path does not resolve
-    # junction targets, so lexical overlap checks alone are insufficient.
-    $ancestor = [IO.Path]::GetFullPath($destinationRoot)
-    while ($ancestor) {
-        if (Test-Path -LiteralPath $ancestor) {
-            if ((Get-Item -LiteralPath $ancestor -Force).Attributes -band [IO.FileAttributes]::ReparsePoint) {
-                throw "Refusing linked destination ancestor: $ancestor"
+    # Resolve-Path does not resolve junction targets in Windows PowerShell 5.
+    # Check both sides so a linked source cannot alias an existing installation.
+    foreach ($candidate in @($sourceFull, [IO.Path]::GetFullPath($destinationRoot))) {
+        $ancestor = $candidate
+        while ($ancestor) {
+            if (Test-Path -LiteralPath $ancestor) {
+                if ((Get-Item -LiteralPath $ancestor -Force).Attributes -band [IO.FileAttributes]::ReparsePoint) {
+                    throw "Refusing linked source or destination ancestor: $ancestor"
+                }
             }
+            $parent = Split-Path $ancestor -Parent
+            if ($parent -eq $ancestor) { break }
+            $ancestor = $parent
         }
-        $parent = Split-Path $ancestor -Parent
-        if ($parent -eq $ancestor) { break }
-        $ancestor = $parent
     }
     New-Item -ItemType Directory -Path $destinationRoot -Force | Out-Null
     $rootFull = (Resolve-Path -LiteralPath $destinationRoot).Path.TrimEnd('\', '/')

@@ -20,6 +20,19 @@ SOURCES = {
 }
 MANIFEST = "references/snapshot/MANIFEST.json"
 
+HEADER = """<!-- GENERATED FILE — do not hand-edit. -->
+<!--
+source_id: {source_id}
+source_relpath: {source_path}
+source_sha256: {sha256}
+generated_at: {generated_at}
+generator: skills/med-study-knead/scripts/sync_from_prompt.py
+-->
+> **快照说明**：来自 `{source_path}`，供独立 Skill / MCP 加载；不是仓内实时源文件。
+> 维护者在完整仓库中运行 `scripts/sync_from_prompt.py` 更新；使用者不需要运行同步脚本。
+
+"""
+
 
 def normalized_bytes(path: Path) -> bytes:
     return path.read_bytes().replace(b"\r\n", b"\n")
@@ -29,8 +42,11 @@ def digest(raw: bytes) -> str:
     return hashlib.sha256(raw).hexdigest()
 
 
-def load_entries(skill_dir: Path) -> dict:
+def load_entries(skill_dir: Path) -> tuple[dict, dict]:
     manifest = json.loads((skill_dir / MANIFEST).read_text(encoding="utf-8"))
+    timestamp = manifest["generated_at"]
+    if not isinstance(timestamp, str) or not re.fullmatch(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z", timestamp):
+        raise ValueError("invalid generation timestamp")
     entries = manifest["sources"]
     if not isinstance(entries, list) or len(entries) != len(SOURCES):
         raise ValueError("manifest must contain exactly the expected sources")
@@ -47,30 +63,24 @@ def load_entries(skill_dir: Path) -> dict:
         if type(entry["bytes"]) is not int or entry["bytes"] < 0:
             raise ValueError("invalid source byte count")
         result[source_id] = entry
-    return result
+    return manifest, result
 
 
-def snapshot_matches(skill_dir: Path, source_id: str, entry: dict) -> bool:
+def snapshot_matches(skill_dir: Path, source_id: str, entry: dict, generated_at: str) -> bool:
     raw = normalized_bytes(skill_dir / entry["snapshot_relpath"])
-    header, separator, body = raw.partition(b"\n\n")
-    if not separator or not header.startswith(b"<!-- GENERATED FILE"):
+    header = HEADER.format(source_id=source_id, source_path=entry["source_relpath"],
+                           sha256=entry["source_sha256"], generated_at=generated_at).encode("utf-8")
+    if not raw.startswith(header):
         return False
-    text = header.decode("utf-8")
-    markers = {
-        "source_id": source_id,
-        "source_relpath": entry["source_relpath"],
-        "source_sha256": entry["source_sha256"],
-    }
-    return (all(re.findall(rf"^{key}: (.*)$", text, re.M) == [value]
-                for key, value in markers.items())
-            and digest(body) == entry["source_sha256"]
+    body = raw[len(header):]
+    return (digest(body) == entry["source_sha256"]
             and len(body) == entry["bytes"])
 
 
 def resolve_mode(root: Path, skill_dir: Path) -> tuple[str, dict]:
     detail = {"mode": "missing", "source_ok": False, "snapshot_ok": False, "errors": []}
     try:
-        entries = load_entries(skill_dir)
+        manifest, entries = load_entries(skill_dir)
     except (OSError, ValueError, KeyError, TypeError) as exc:
         detail["errors"].append(f"manifest: {exc}")
         return "missing", detail
@@ -84,7 +94,7 @@ def resolve_mode(root: Path, skill_dir: Path) -> tuple[str, dict]:
             source_ok = False
             detail["errors"].append(f"{source_id} source: {exc}")
         try:
-            if not snapshot_matches(skill_dir, source_id, entry):
+            if not snapshot_matches(skill_dir, source_id, entry, manifest["generated_at"]):
                 raise ValueError("snapshot body/header differs from manifest")
         except (OSError, ValueError) as exc:
             snapshot_ok = False
