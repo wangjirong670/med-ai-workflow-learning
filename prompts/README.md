@@ -14,7 +14,7 @@
 
 1. **改规则 → 只改** `quickstart.zh.md` / `quickstart-lite.zh.md`。  
 2. **必须同步**对应 `share-pack-*.zh.md` 中【对话块】到「从这里结束」之间的正文（应与权威源逐字一致）。  
-3. 验收：对话块与权威源 diff 为空；红线语义不得在壳里另写一套。  
+3. 运行 `python scripts/sync_share_packs.py` 更新分享块，`--check` 只读验收；红线语义不得在壳里另写一套。  
 4. skill 快照仍钉 `quickstart.zh.md`，不以分享包为准。
 
 测试水位见 [`../docs/testing-status.md`](../docs/testing-status.md)。

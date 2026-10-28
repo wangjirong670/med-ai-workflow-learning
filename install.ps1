@@ -1,15 +1,6 @@
 #!/usr/bin/env pwsh
-# med-study-knead — generic SKILL.md installer
-# Works with any agent that loads a folder named <skill>/SKILL.md.
-#
-# Local:   .\install.ps1
-# Remote:  irm https://raw.githubusercontent.com/wangjirong670/med-ai-workflow-learning/v0.1.0/install.ps1 | iex
-#
-# Examples:
-#   .\install.ps1 -Target "$HOME/.config/myagent/skills"
-#   .\install.ps1 -All
-#   .\install.ps1 -PrintOnly
-
+# Install from a reviewed checkout: .\install.ps1 -Target "<your-skills-dir>"
+# Default: ~/.skills (portable copy; configure your agent to load it).
 [CmdletBinding()]
 param(
     [string]$Target,
@@ -18,155 +9,145 @@ param(
     [switch]$All,
     [switch]$PrintOnly
 )
-
 $ErrorActionPreference = "Stop"
 $SkillName = "med-study-knead"
-$RepoUrl = "https://github.com/wangjirong670/med-ai-workflow-learning"
-$ZipUrl = "$RepoUrl/archive/refs/tags/v0.1.0.zip"
-
-function Write-Info([string]$msg) { Write-Host "[install] $msg" }
-function Write-Ok([string]$msg)   { Write-Host "[install] OK  $msg" -ForegroundColor Green }
-function Write-Skip([string]$msg) { Write-Host "[install] --  $msg" -ForegroundColor Yellow }
-
+function Write-Info([string]$message) { Write-Host "[install] $message" }
 function Get-HomeDir {
-    $d = [Environment]::GetFolderPath("UserProfile")
-    if ($d) { return $d }
-    return $env:USERPROFILE
+    $directory = [Environment]::GetFolderPath("UserProfile")
+    if ($directory) { return $directory }
+    if ($env:USERPROFILE) { return $env:USERPROFILE }
+    throw "Cannot locate user profile; use -Target"
 }
-
 function Find-LocalRepo {
-    if ($Repo -and (Test-Path (Join-Path $Repo "skills/$SkillName/SKILL.md"))) {
-        return (Resolve-Path $Repo).Path
+    if ($Repo) {
+        if (-not (Test-Path -LiteralPath (Join-Path $Repo "skills/$SkillName/SKILL.md"))) {
+            throw "Repo does not contain the skill: $Repo"
+        }
+        return (Resolve-Path -LiteralPath $Repo).Path
     }
-    if ($PSScriptRoot -and (Test-Path (Join-Path $PSScriptRoot "skills/$SkillName/SKILL.md"))) {
+    if ($PSScriptRoot -and (Test-Path -LiteralPath (Join-Path $PSScriptRoot "skills/$SkillName/SKILL.md"))) {
         return $PSScriptRoot
     }
-    $dir = (Get-Location).Path
-    for ($i = 0; $i -lt 8 -and $dir; $i++) {
-        if (Test-Path (Join-Path $dir "skills/$SkillName/SKILL.md")) { return $dir }
-        $parent = Split-Path $dir -Parent
-        if ($parent -eq $dir) { break }
-        $dir = $parent
+    $directory = (Get-Location).Path
+    for ($i = 0; $i -lt 8 -and $directory; $i++) {
+        if (Test-Path -LiteralPath (Join-Path $directory "skills/$SkillName/SKILL.md")) { return $directory }
+        $parent = Split-Path $directory -Parent
+        if ($parent -eq $directory) { break }
+        $directory = $parent
     }
-    return $null
+    throw "No checkout found. Clone the repository, review this script, then run it with -Target."
 }
-
 function Get-SkillSource {
     if ($Source) {
-        if (-not (Test-Path (Join-Path $Source "SKILL.md"))) {
-            throw "Source does not look like a skill folder: $Source"
+        $directory = (Resolve-Path -LiteralPath $Source).Path
+    } else {
+        $directory = Join-Path (Find-LocalRepo) "skills/$SkillName"
+    }
+    foreach ($file in @("SKILL.md", "LICENSE", "references/snapshot/MANIFEST.json")) {
+        if (-not (Test-Path -LiteralPath (Join-Path $directory $file) -PathType Leaf)) {
+            throw "Incomplete package: $file missing from $directory"
         }
-        return (Resolve-Path $Source).Path
     }
-    $repoRoot = Find-LocalRepo
-    if ($repoRoot) {
-        Write-Info "using local package $repoRoot\skills\$SkillName"
-        return (Join-Path $repoRoot "skills/$SkillName")
-    }
-    Write-Info "no local package; downloading $ZipUrl"
-    $tmp = Join-Path ([System.IO.Path]::GetTempPath()) ("med-study-knead-" + [guid]::NewGuid().ToString("n"))
-    New-Item -ItemType Directory -Path $tmp | Out-Null
-    $zip = Join-Path $tmp "src.zip"
-    Invoke-WebRequest -Uri $ZipUrl -OutFile $zip
-    Expand-Archive -Path $zip -DestinationPath $tmp -Force
-    $found = Get-ChildItem -Path $tmp -Recurse -Filter "SKILL.md" |
-        Where-Object { $_.Directory.Name -eq $SkillName } |
-        Select-Object -First 1
-    if (-not $found) { throw "zip has no skills/$SkillName/SKILL.md" }
-    return $found.Directory.FullName
+    return $directory
 }
-
-# Any agent that stores skills as <root>/<name>/SKILL.md.
-# Unknown roots are fine — use -Target. Known names are only probes.
 function Get-CandidateRoots {
-    $h = Get-HomeDir
-    $cwd = (Get-Location).Path
+    $profileDirectory = Get-HomeDir
+    $currentDirectory = (Get-Location).Path
     return @(
-        # universal / local package
-        (Join-Path $h ".skills"),
-        (Join-Path $h ".local/share/agent-skills"),
-        (Join-Path $h ".config/agent-skills"),
-        # project-local
-        (Join-Path $cwd ".mimocode/skills"),
-        (Join-Path $cwd ".claude/skills"),
-        (Join-Path $cwd ".cursor/skills"),
-        (Join-Path $cwd ".agents/skills"),
-        (Join-Path $cwd "skills"),
-        # user-level agents (only if dir already exists, unless -All)
-        (Join-Path $h ".config/mimocode/skills"),
-        (Join-Path $h ".claude/skills"),
-        (Join-Path $h ".cursor/skills"),
-        (Join-Path $h ".codex/skills"),
-        (Join-Path $h ".gemini/skills"),
-        (Join-Path $h ".agents/skills"),
-        (Join-Path $h ".config/continue/skills"),
-        (Join-Path $h ".config/skills")
+        (Join-Path $profileDirectory ".skills"),
+        (Join-Path $profileDirectory ".local/share/agent-skills"),
+        (Join-Path $profileDirectory ".config/agent-skills"),
+        (Join-Path $currentDirectory ".mimocode/skills"),
+        (Join-Path $currentDirectory ".claude/skills"),
+        (Join-Path $currentDirectory ".cursor/skills"),
+        (Join-Path $currentDirectory ".agents/skills"),
+        (Join-Path $profileDirectory ".claude/skills"),
+        (Join-Path $profileDirectory ".cursor/skills"),
+        (Join-Path $profileDirectory ".codex/skills"),
+        (Join-Path $profileDirectory ".gemini/skills"),
+        (Join-Path $profileDirectory ".agents/skills")
     )
 }
-
-function Install-To([string]$destRoot, [string]$src) {
-    $dest = Join-Path $destRoot $SkillName
-    $srcFull = (Resolve-Path $src).Path.TrimEnd('\', '/')
-    $destParent = if (Test-Path $dest) { (Resolve-Path $dest).Path.TrimEnd('\', '/') } else { $dest }
-    if ($destParent -eq $srcFull) {
-        Write-Skip "skip (same as source): $dest"
-        return
-    }
-    if ($destRoot -eq (Split-Path $srcFull -Parent)) {
-        Write-Skip "skip (source tree): $destRoot"
-        return
-    }
-    New-Item -ItemType Directory -Path $destRoot -Force | Out-Null
-    if (Test-Path $dest) { Remove-Item -Recurse -Force $dest }
-    Copy-Item -Recurse -Force $src $dest
-    Write-Ok "installed -> $dest"
-}
-
-try {
-    $src = Get-SkillSource
-    Write-Info "skill source: $src"
-    Write-Info "format: SKILL.md skill folder (any agent that loads this layout)"
-
-    $targets = [System.Collections.Generic.List[string]]::new()
-    if ($Target) {
-        $targets.Add($Target)
-    } else {
-        foreach ($r in Get-CandidateRoots) {
-            $exists = Test-Path $r
-            $universal = $r -like "*.skills" -or $r -like "*agent-skills*"
-            $project = $r -like "*$((Get-Location).Path)*" -or $r -like "*.mimocode*" -or $r -like "*\.claude\skills" -or $r -like "*\.cursor\skills" -or $r -like "*\.agents\skills"
-            if ($exists -or $universal -or ($project -and $All)) {
-                $targets.Add($r)
-            } elseif ($exists) {
-                $targets.Add($r)
-            } else {
-                Write-Skip "skip (absent, use -Target or -All): $r"
+function Install-To([string]$destinationRoot, [string]$sourceDirectory) {
+    $sourceFull = (Resolve-Path -LiteralPath $sourceDirectory).Path.TrimEnd('\', '/')
+    $provider = $null
+    $drive = $null
+    $destinationRoot = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($destinationRoot, [ref]$provider, [ref]$drive)
+    if ($provider.Name -ne 'FileSystem') { throw 'Target must use the FileSystem provider' }
+    # Resolve-Path does not resolve junction targets in Windows PowerShell 5.
+    # Check both sides so a linked source cannot alias an existing installation.
+    foreach ($candidate in @($sourceFull, [IO.Path]::GetFullPath($destinationRoot))) {
+        $ancestor = $candidate
+        while ($ancestor) {
+            if (Test-Path -LiteralPath $ancestor) {
+                if ((Get-Item -LiteralPath $ancestor -Force).Attributes -band [IO.FileAttributes]::ReparsePoint) {
+                    throw "Refusing linked source or destination ancestor: $ancestor"
+                }
             }
+            $parent = Split-Path $ancestor -Parent
+            if ($parent -eq $ancestor) { break }
+            $ancestor = $parent
         }
-        # always drop one portable copy under ~/.skills
-        $targets.Add((Join-Path (Get-HomeDir) ".skills"))
-        $targets.Add((Join-Path (Get-Location).Path ".mimocode/skills"))
     }
-
-    $targets = $targets | Select-Object -Unique
-
+    New-Item -ItemType Directory -Path $destinationRoot -Force | Out-Null
+    $rootFull = (Resolve-Path -LiteralPath $destinationRoot).Path.TrimEnd('\', '/')
+    $destination = Join-Path $rootFull $SkillName
+    $separator = [System.IO.Path]::DirectorySeparatorChar
+    $comparison = if ($env:OS -eq "Windows_NT") { [StringComparison]::OrdinalIgnoreCase } else { [StringComparison]::Ordinal }
+    if ([string]::Equals($destination, $sourceFull, $comparison)) {
+        Write-Info "skip (same as source): $destination"; return
+    }
+    if ((Test-Path -LiteralPath $destination) -and ((Get-Item -LiteralPath $destination -Force).Attributes -band [IO.FileAttributes]::ReparsePoint)) {
+        throw "Refusing to replace link: $destination"
+    }
+    if (($rootFull + $separator).StartsWith($sourceFull + $separator, $comparison) -or
+        ($sourceFull + $separator).StartsWith($destination + $separator, $comparison)) {
+        throw "Refusing overlapping source and destination: $destination"
+    }
+    $stage = Join-Path $rootFull (".$SkillName.stage." + [guid]::NewGuid().ToString("n"))
+    $backup = Join-Path $rootFull (".$SkillName.backup." + [guid]::NewGuid().ToString("n"))
+    $movedPrevious = $false
+    try {
+        New-Item -ItemType Directory -Path $stage | Out-Null
+        Get-ChildItem -LiteralPath $sourceFull -Force | ForEach-Object {
+            Copy-Item -LiteralPath $_.FullName -Destination $stage -Recurse -Force
+        }
+        $python = Get-Command python -ErrorAction SilentlyContinue
+        if (-not $python) { $python = Get-Command python3 -ErrorAction Stop }
+        & $python.Source -c 'import sys; sys.exit(0 if sys.version_info >= (3,10) else 1)'
+        if ($LASTEXITCODE -ne 0) { throw 'Installation requires Python 3.10+' }
+        & $python.Source (Join-Path $sourceFull 'scripts/check_resolve.py') --root $stage --skill-dir $stage --require-release | Out-Null
+        if ($LASTEXITCODE -ne 0) { throw 'Staged package failed standalone integrity verification; previous installation unchanged' }
+        if (Test-Path -LiteralPath $destination) {
+            Move-Item -LiteralPath $destination -Destination $backup
+            $movedPrevious = $true
+        }
+        Move-Item -LiteralPath $stage -Destination $destination
+    } catch {
+        if ($movedPrevious -and -not (Test-Path -LiteralPath $destination)) {
+            try { Move-Item -LiteralPath $backup -Destination $destination }
+            catch { Write-Info "Restore failed; previous installation retained at $backup" }
+        }
+        throw
+    } finally {
+        if (Test-Path -LiteralPath $stage) { Remove-Item -LiteralPath $stage -Recurse -Force }
+    }
+    if (Test-Path -LiteralPath $backup) { Remove-Item -LiteralPath $backup -Recurse -Force }
+    Write-Info "installed -> $destination"
+}
+try {
+    $sourceDirectory = Get-SkillSource
+    if ($Target) { $targets = @($Target) }
+    elseif ($All) { $targets = @(Get-CandidateRoots | Select-Object -Unique) }
+    else { $targets = @((Join-Path (Get-HomeDir) ".skills")) }
     if ($PrintOnly) {
-        Write-Host "Would copy $src ->"
+        Write-Host "Would copy $sourceDirectory ->"
         $targets | ForEach-Object { Write-Host "  $(Join-Path $_ $SkillName)" }
         return
     }
-
-    foreach ($t in $targets) {
-        if ($t) { Install-To $t $src }
-    }
-
-    Write-Host ""
-    Write-Ok "done. Package is standard: <dir>/$SkillName/SKILL.md"
-    Write-Host "Point any SKILL.md-capable agent at one of those folders (or symlink it)."
-    Write-Host "New session, then e.g.:  帮我揉一下这页药理课业笔记"
-    Write-Host "Docs: $RepoUrl/blob/v0.1.0/skills/README.md"
-}
-catch {
-    Write-Host "[install] FAIL $($_.Exception.Message)" -ForegroundColor Red
+    foreach ($directory in $targets) { Install-To $directory $sourceDirectory }
+    Write-Info "Done. Configure your agent to load <target>/$SkillName/SKILL.md; discovery depends on the agent."
+} catch {
+    Write-Error "[install] FAIL $($_.Exception.Message)"
     exit 1
 }

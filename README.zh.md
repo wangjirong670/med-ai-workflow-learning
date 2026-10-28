@@ -22,8 +22,8 @@
 
 **揉完的学习钉子单（骨架）**
 
-- **一句话**：雾岭草两条功效（清热 / 安神）都出自课堂笔记，**还没对教材**。
-- **概念钉子**：清热（材料）· 安神（材料）· 与白花藤辨异（**我补的，待你核对**）
+- **一句话**：笔记出现「清热 / 安神」两种说法，但两行抄乱、对象可能混淆，**归属未清，也没对教材**。
+- **概念钉子**：清热 / 安神（笔记原话，归属待核）· 先核对两行分别指什么（核对步骤）
 - **还不能当真**：无版次页码；剂量材料未记，我补的数字一律不信。
 
 每条分清「材料」和「我补的，待你核对」——待核的装不成教材事实。
@@ -37,7 +37,7 @@
 | 装进 agent 长期用 | 下方 Install（skill） |
 | 看规则 / 贡献 | 权威对话块 [`prompts/quickstart.zh.md`](prompts/quickstart.zh.md)（分享包与它逐字一致） |
 
-**用法三句**：① 新开对话，贴对话块再贴材料，说「整理成学习钉子单」；② 不确定写「我补的，待你核对」；③ 真实患者停，作业只给骨架。
+**用法三句**：① 新开对话，贴对话块再贴材料，说「整理成学习钉子单」；② 材料不清保留来源，模型补充标「我补的，待你核对」；③ 真实患者停，作业只给骨架。
 
 ## 这是什么 / 不是什么
 
@@ -49,12 +49,21 @@
 
 ## 安装
 
-技能包是标准 **`SKILL.md` 目录**，任意支持该格式的 agent 可用。
+安装需要 Python 3.10+（`python` / `python3`）：切换前验证暂存包的独立运行完整性，失败保留旧包。
 
-| 系统 | 一条命令 |
-|------|----------|
-| **Windows** | `irm https://raw.githubusercontent.com/wangjirong670/med-ai-workflow-learning/v0.1.0/install.ps1 \| iex` |
-| **macOS / Linux** | `curl -fsSL https://raw.githubusercontent.com/wangjirong670/med-ai-workflow-learning/v0.1.0/install.sh \| bash` |
+技能包采用标准 **`SKILL.md` 目录**；发现路径和权限取决于宿主，跨 agent 自动加载尚未全面验证。
+
+先克隆仓库并阅读脚本，再安装到你的 agent 实际配置的技能目录：
+
+```bash
+git clone https://github.com/wangjirong670/med-ai-workflow-learning.git
+cd med-ai-workflow-learning
+```
+
+| OS | Command after review |
+|----|----|
+| Windows | `powershell -File .\install.ps1 -Target "<your-skills-dir>"` |
+| macOS / Linux | `bash ./install.sh "<your-skills-dir>"` |
 
 建议先阅读脚本再执行。
 

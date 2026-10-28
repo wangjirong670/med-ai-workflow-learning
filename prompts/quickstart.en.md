@@ -8,4 +8,4 @@ An English prompt is **not** published yet. Red-line wording, `AI·待核`, and 
 
 See [`../tests/redline-cases.en.md`](../tests/redline-cases.en.md).
 
-Also: textbook-like notes / LLM rewrites are **capped at E2** until verified against real edition+pages (see quickstart.zh.md).
+Also: textbook-like notes / LLM rewrites remain supplied material, not original sources; verified original edition+pages may be added as support for particular claims without relabeling the rewrite as an original (see quickstart.zh.md).

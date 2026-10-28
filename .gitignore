@@ -24,3 +24,7 @@ docs/_review/
 *-raw.txt
 docs/RELEASE-CHECK.md
 docs/NEXT-queue.md
+
+# Python runtime caches
+__pycache__/
+*.py[cod]

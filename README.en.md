@@ -16,12 +16,21 @@ A fictional messy note about a made-up herb「雾岭草」becomes a pin list wit
 
 ## Install
 
-Standard **`SKILL.md` skill folder** — any agent that loads that layout.
+Installation requires Python 3.10+ (`python` / `python3`) to verify the staged standalone package before replacing an existing installation.
 
-| OS | One line |
-|----|----------|
-| **Windows** | `irm https://raw.githubusercontent.com/wangjirong670/med-ai-workflow-learning/v0.1.0/install.ps1 \| iex` |
-| **macOS / Linux** | `curl -fsSL https://raw.githubusercontent.com/wangjirong670/med-ai-workflow-learning/v0.1.0/install.sh \| bash` |
+Standard **`SKILL.md` skill folder**. Discovery paths and permissions depend on the host; cross-agent loading is not comprehensively tested.
+
+Clone the repository, inspect the scripts, then install into your agent’s configured skills directory:
+
+```bash
+git clone https://github.com/wangjirong670/med-ai-workflow-learning.git
+cd med-ai-workflow-learning
+```
+
+| OS | Command after review |
+|----|----|
+| Windows | `powershell -File .\install.ps1 -Target "<your-skills-dir>"` |
+| macOS / Linux | `bash ./install.sh "<your-skills-dir>"` |
 
 Read the script before you run it.
 
