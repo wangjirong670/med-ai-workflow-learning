@@ -3,7 +3,7 @@
 source_id: method
 source_relpath: docs/method.zh.md
 source_sha256: f6fff14adee2367052a655d6ca318b71749836086ce4612f20e8a8df679d7adb
-generated_at: 2026-10-28T13:06:30Z
+generated_at: 2026-10-29T06:42:46Z
 generator: skills/med-study-knead/scripts/sync_from_prompt.py
 -->
 > **快照说明**：来自 `docs/method.zh.md`，供独立 Skill / MCP 加载；不是仓内实时源文件。
