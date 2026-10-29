@@ -27,3 +27,5 @@ python skills/med-study-knead/scripts/sync_from_prompt.py --check
 行为定义在中英 Markdown 与 `cases.yaml` 中共 38 个 ID。工程测试只校验 ID 覆盖，不声称自动证明自然语言语义一致。D6 初轮未出现错误时，勘误分支记未覆盖；历史 W 保留，不重写历史数据。
 
 新版协议仍需在干净会话中分别测试完整 prompt、Lite、独立 Skill 与 MCP 交付，并与无 Skill 基线比较。不得把旧冒烟记录或本页工程测试表述为新版模型通过率。
+
+2026-10-29 定向修订：固定逐轮输入见 `behavior-scenarios.json`（38个ID、51个场景；未运行），执行范围与判分分支见 `../docs/behavior-followup-2026-10-29.md`。每次运行记录实际Git提交；同模型/同宿主对照暂略过，不将不同配置的结果当成入口因果差异。D6必须分别记录范围、结案与勘误断言。

@@ -3,7 +3,7 @@
 source_id: long-material
 source_relpath: docs/long-material.zh.md
 source_sha256: 4af2702f41507a0581f70e1d5fc2fec28bbe58697e15ffc61d3cf9e9f82c6db3
-generated_at: 2026-10-28T13:06:30Z
+generated_at: 2026-10-29T06:42:46Z
 generator: skills/med-study-knead/scripts/sync_from_prompt.py
 -->
 > **快照说明**：来自 `docs/long-material.zh.md`，供独立 Skill / MCP 加载；不是仓内实时源文件。
