@@ -56,6 +56,10 @@ Use [`examples/formA-notes.md`](examples/formA-notes.md). Expect: one-line statu
 
 Prompts: free chatbots use [`share-pack-lite.zh.md`](prompts/share-pack-lite.zh.md); stronger models/agents use [`share-pack-full.zh.md`](prompts/share-pack-full.zh.md) or the skill. Long books/semesters should be processed chapter by chapter ([`docs/long-material.zh.md`](docs/long-material.zh.md)).
 
+## Desktop App
+
+Want a standalone desktop study workbench built around this methodology (PDF/image OCR import, traceable citations, persistent corrections, and Markdown export)? Check out [**MedTutor (`med-tutor`)**](https://github.com/wangjirong670/med-tutor) ([Windows installer](https://github.com/wangjirong670/med-tutor/releases/latest)).
+
 ## Docs
 
 - [`docs/method.zh.md`](docs/method.zh.md) — discipline (Chinese)

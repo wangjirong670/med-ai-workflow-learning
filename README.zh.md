@@ -35,6 +35,7 @@
 | 朋友用免费 chatbot（豆包等） | 转发 [`prompts/share-pack-lite.zh.md`](prompts/share-pack-lite.zh.md) |
 | 朋友用强模型 / agent | 转发 [`prompts/share-pack-full.zh.md`](prompts/share-pack-full.zh.md) |
 | 装进 agent 长期用 | 下方 Install（skill） |
+| 想要开箱即用的桌面应用 | [**MedTutor (`med-tutor`)**](https://github.com/wangjirong670/med-tutor)（基于本方法论的桌面端揉书工作台，支持 [Windows 安装包下载](https://github.com/wangjirong670/med-tutor/releases/latest)） |
 | 看规则 / 贡献 | 权威对话块 [`prompts/quickstart.zh.md`](prompts/quickstart.zh.md)（分享包与它逐字一致） |
 
 **用法三句**：① 新开对话，贴对话块再贴材料，说「整理成学习钉子单」；② 材料不清保留来源，模型补充标「我补的，待你核对」；③ 真实患者停，作业只给骨架。
